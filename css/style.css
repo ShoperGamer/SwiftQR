@@ -273,3 +273,98 @@ body.dark-mode {
     font-size: 1.25rem;
   }
 }
+
+/* Custom Modal Styles (New Feature) */
+.custom-modal {
+  display: none;
+  position: fixed;
+  z-index: 1050;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.custom-modal.show {
+  display: flex;
+  opacity: 1;
+}
+
+.custom-modal-content {
+  background-color: white;
+  border-radius: 1rem;
+  width: 90%;
+  max-width: 450px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  transform: scale(0.9);
+  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  overflow: hidden;
+}
+
+.custom-modal.show .custom-modal-content {
+  transform: scale(1);
+}
+
+.custom-modal-header {
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid #dee2e6;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: var(--primary-color);
+  color: white;
+}
+
+.close-modal-btn {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 0;
+  line-height: 1;
+  opacity: 0.8;
+  transition: opacity 0.2s;
+}
+
+.close-modal-btn:hover {
+  opacity: 1;
+}
+
+.custom-modal-body {
+  padding: 1.5rem;
+}
+
+.custom-modal-footer {
+  padding: 1rem 1.5rem;
+  border-top: 1px solid #dee2e6;
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  background-color: #f8f9fa;
+}
+
+/* Dark Mode Modal Support */
+.dark-mode .custom-modal-content {
+  background-color: #2d2d2d;
+  color: #e9ecef;
+}
+
+.dark-mode .custom-modal-header {
+  border-bottom-color: #444;
+}
+
+.dark-mode .custom-modal-footer {
+  background-color: #222;
+  border-top-color: #444;
+}
+
+.dark-mode .close-modal-btn {
+  color: #e9ecef;
+}

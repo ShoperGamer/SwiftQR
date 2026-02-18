@@ -20,24 +20,28 @@ document.addEventListener("DOMContentLoaded", () => {
   const centerImageContainer = document.getElementById("centerImageContainer");
   const darkModeToggle = document.getElementById("darkModeToggle");
 
+  // Modal Elements
+  const filenameModal = document.getElementById("filenameModal");
+  const filenameInput = document.getElementById("filenameInput");
+  const confirmModalBtn = document.getElementById("confirmModalBtn");
+  const cancelModalBtn = document.getElementById("cancelModalBtn");
+  const closeModalBtn = document.querySelector(".close-modal-btn");
+
   // State variables
   let centerImage = null;
   let centerImageLoaded = false;
   let currentQRCode = null;
+  let finalDownloadName = "qrcode.png"; // Default name
 
   // Initialize
   initializeApp();
 
   function initializeApp() {
-    // Load dark mode preference
     const darkMode = localStorage.getItem('darkMode') === 'true';
     document.body.classList.toggle('dark-mode', darkMode);
     darkModeToggle.checked = darkMode;
 
-    // Set up event listeners
     setupEventListeners();
-    
-    // Initial preview
     updatePreview();
   }
 
@@ -46,13 +50,11 @@ document.addEventListener("DOMContentLoaded", () => {
     [urlInput, sizeInput, colorInput, bgColorInput, shapeSelect, frameSelect, frameColorInput, frameThicknessInput]
       .forEach(el => el.addEventListener("input", updatePreview));
 
-    // Frame thickness value display
     frameThicknessInput.addEventListener("input", () => {
       thicknessValue.textContent = frameThicknessInput.value;
       updatePreview();
     });
 
-    // Center image controls
     centerImageCheck.addEventListener("change", () => {
       centerImageContainer.style.display = centerImageCheck.checked ? "block" : "none";
       if (!centerImageCheck.checked) {
@@ -65,22 +67,109 @@ document.addEventListener("DOMContentLoaded", () => {
 
     centerImageInput.addEventListener("change", handleCenterImageUpload);
 
-    // Form submission
-    form.addEventListener("submit", handleFormSubmit);
+    // Form submission - OPEN MODAL INSTEAD OF DIRECT GENERATE
+    form.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const url = urlInput.value.trim();
+      
+      if (!url) {
+        showAlert('กรุณาใส่ URL', 'warning');
+        return;
+      }
+      
+      if (!url.startsWith("http")) {
+        showAlert('กรุณาใส่ URL ที่ถูกต้อง (ต้องเริ่มต้นด้วย http หรือ https)', 'warning');
+        return;
+      }
 
-    // Action buttons
+      // Reset input and open modal
+      filenameInput.value = "";
+      showModal();
+    });
+
+    // Modal Events
+    confirmModalBtn.addEventListener("click", handleModalConfirm);
+    cancelModalBtn.addEventListener("click", hideModal);
+    closeModalBtn.addEventListener("click", hideModal);
+    filenameModal.addEventListener("click", (e) => {
+      if (e.target === filenameModal) hideModal();
+    });
+    
+    // Support Enter key in modal input
+    filenameInput.addEventListener("keypress", (e) => {
+      if (e.key === "Enter") handleModalConfirm();
+    });
+
     downloadBtn.addEventListener("click", downloadQRCode);
     clearBtn.addEventListener("click", resetForm);
-
-    // Dark mode toggle
     darkModeToggle.addEventListener("change", toggleDarkMode);
+  }
+
+  // --- Modal Logic ---
+  function showModal() {
+    filenameModal.classList.add("show");
+    setTimeout(() => filenameInput.focus(), 100);
+  }
+
+  function hideModal() {
+    filenameModal.classList.remove("show");
+  }
+
+  function handleModalConfirm() {
+    const userInput = filenameInput.value.trim();
+    const url = urlInput.value.trim();
+
+    if (userInput) {
+      // User provided name
+      finalDownloadName = userInput;
+    } else {
+      // User didn't answer -> Use URL + swiftqr
+      const cleanUrl = url
+        .replace(/(^\w+:|^)\/\//, '') // Remove http://
+        .replace(/[^a-zA-Z0-9]/g, '_') // Replace special chars
+        .substring(0, 50); // Limit length
+      
+      finalDownloadName = `${cleanUrl}_swiftqr`;
+    }
+
+    // Ensure .png extension
+    if (!finalDownloadName.toLowerCase().endsWith('.png')) {
+      finalDownloadName += '.png';
+    }
+
+    hideModal();
+    generateQRCode(); // Proceed to generation
+  }
+
+  // --- Generation Logic (Moved from form submit) ---
+  function generateQRCode() {
+    const url = urlInput.value.trim();
+    const size = parseInt(sizeInput.value);
+    const color = colorInput.value;
+    const bgColor = bgColorInput.value;
+    const shape = shapeSelect.value;
+    const frameShape = frameSelect.value;
+    const frameColor = frameColorInput.value;
+    const frameThickness = parseInt(frameThicknessInput.value);
+
+    drawQR(qrCanvas, url, size, color, bgColor, shape, frameShape, frameColor, frameThickness, centerImage);
+    
+    qrResultContainer.style.display = "block";
+    qrResultContainer.classList.add('fade-in');
+    clearBtn.disabled = false;
+
+    currentQRCode = qrCanvas.toDataURL("image/png");
+    
+    // Scroll to result
+    qrResultContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    
+    showAlert(`สร้าง QR Code สำเร็จ! ชื่อไฟล์ที่จะดาวน์โหลด: ${finalDownloadName}`, 'success');
   }
 
   function handleCenterImageUpload(e) {
     const file = e.target.files[0];
     if (!file) return;
     
-    // Check file size (max 2MB)
     if (file.size > 2 * 1024 * 1024) {
       alert('ไฟล์ภาพใหญ่เกินไป กรุณาเลือกไฟล์ที่มีขนาดน้อยกว่า 2MB');
       centerImageInput.value = '';
@@ -129,14 +218,10 @@ document.addEventListener("DOMContentLoaded", () => {
     canvas.width = totalSize;
     canvas.height = totalSize;
 
-    // Clear canvas
     ctx.clearRect(0, 0, totalSize, totalSize);
-
-    // Draw background
     ctx.fillStyle = bgColor;
     ctx.fillRect(0, 0, totalSize, totalSize);
 
-    // Create clipping path for rounded corners if needed
     ctx.save();
     if (frameShape === "rounded") {
       const radius = 30;
@@ -149,7 +234,6 @@ document.addEventListener("DOMContentLoaded", () => {
       ctx.clip();
     }
 
-    // Draw QR code inside the clipped area
     const cellSize = Math.floor(size / qr.getModuleCount());
     const qrSize = qr.getModuleCount() * cellSize;
     const offset = borderThickness + (size - qrSize) / 2;
@@ -178,7 +262,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     ctx.restore();
 
-    // Draw frame
     if (frameShape !== "none") {
       ctx.strokeStyle = frameColor;
       ctx.lineWidth = borderThickness;
@@ -192,13 +275,11 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     }
 
-    // Draw center image
     if (centerImg && centerImageLoaded) {
       const imgSize = size * 0.25;
       const x = totalSize / 2 - imgSize / 2;
       const y = totalSize / 2 - imgSize / 2;
       
-      // Draw a white background for the center image
       ctx.fillStyle = bgColor;
       ctx.fillRect(x - 5, y - 5, imgSize + 10, imgSize + 10);
       
@@ -220,40 +301,6 @@ document.addEventListener("DOMContentLoaded", () => {
     ctx.closePath();
   }
 
-  function handleFormSubmit(e) {
-    e.preventDefault();
-    const url = urlInput.value.trim();
-    
-    if (!url) {
-      showAlert('กรุณาใส่ URL', 'warning');
-      return;
-    }
-    
-    if (!url.startsWith("http")) {
-      showAlert('กรุณาใส่ URL ที่ถูกต้อง (ต้องเริ่มต้นด้วย http หรือ https)', 'warning');
-      return;
-    }
-
-    const size = parseInt(sizeInput.value);
-    const color = colorInput.value;
-    const bgColor = bgColorInput.value;
-    const shape = shapeSelect.value;
-    const frameShape = frameSelect.value;
-    const frameColor = frameColorInput.value;
-    const frameThickness = parseInt(frameThicknessInput.value);
-
-    drawQR(qrCanvas, url, size, color, bgColor, shape, frameShape, frameColor, frameThickness, centerImage);
-    
-    // Show result with animation
-    qrResultContainer.style.display = "block";
-    qrResultContainer.classList.add('fade-in');
-    clearBtn.disabled = false;
-
-    currentQRCode = qrCanvas.toDataURL("image/png");
-    
-    showAlert('สร้าง QR Code สำเร็จแล้ว!', 'success');
-  }
-
   function downloadQRCode() {
     if (!currentQRCode) {
       showAlert('ไม่มี QR Code ที่จะดาวน์โหลด', 'warning');
@@ -262,7 +309,8 @@ document.addEventListener("DOMContentLoaded", () => {
     
     const link = document.createElement("a");
     link.href = currentQRCode;
-    link.download = `qr-code-${Date.now()}.png`;
+    // USE THE SET FILENAME HERE
+    link.download = finalDownloadName; 
     link.click();
     
     showAlert('กำลังดาวน์โหลด QR Code...', 'info');
@@ -278,7 +326,6 @@ document.addEventListener("DOMContentLoaded", () => {
     clearBtn.disabled = true;
     thicknessValue.textContent = "5";
     
-    // Reset color inputs to default
     colorInput.value = "#000000";
     bgColorInput.value = "#FFFFFF";
     frameColorInput.value = "#007bff";
@@ -295,13 +342,11 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function showAlert(message, type) {
-    // Remove any existing alerts
     const existingAlert = document.querySelector('.alert');
     if (existingAlert) {
       existingAlert.remove();
     }
     
-    // Create alert element
     const alert = document.createElement('div');
     alert.className = `alert alert-${type} alert-dismissible fade show mt-3`;
     alert.innerHTML = `
@@ -309,14 +354,12 @@ document.addEventListener("DOMContentLoaded", () => {
       <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
     `;
     
-    // Insert after the form
     form.parentNode.insertBefore(alert, form.nextSibling);
     
-    // Auto remove after 3 seconds
     setTimeout(() => {
       if (alert.parentNode) {
         alert.remove();
       }
-    }, 3000);
+    }, 4000);
   }
 });
