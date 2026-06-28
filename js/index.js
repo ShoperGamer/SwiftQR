@@ -31,7 +31,7 @@ document.addEventListener("DOMContentLoaded", () => {
   let centerImage = null;
   let centerImageLoaded = false;
   let currentQRCode = null;
-  let finalDownloadName = "qrcode.png"; // Default name
+  let finalDownloadName = "qrcode.png"; 
 
   // Initialize
   initializeApp();
@@ -47,11 +47,24 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function setupEventListeners() {
     // Input events for real-time preview
-    [urlInput, sizeInput, colorInput, bgColorInput, shapeSelect, frameSelect, frameColorInput, frameThicknessInput]
-      .forEach(el => el.addEventListener("input", updatePreview));
+    [urlInput, sizeInput, colorInput, bgColorInput, shapeSelect, frameSelect].forEach(el => {
+      el.addEventListener("input", updatePreview);
+    });
 
+    // Smart UX: ถ้าผู้ใช้คลิกเลือกเปลี่ยนสีกรอบ แต่เปิด "ไม่มีกรอบ" อยู่ ให้สลับเปิดกรอบอัติโนมัติ
+    frameColorInput.addEventListener("input", () => {
+      if (frameSelect.value === "none") {
+        frameSelect.value = "square"; 
+      }
+      updatePreview();
+    });
+
+    // Smart UX: เช่นเดียวกับการปรับความหนา ให้สลับเปิดกรอบอัติโนมัติทันที
     frameThicknessInput.addEventListener("input", () => {
-      thicknessValue.textContent = frameThicknessInput.value;
+      thicknessValue.textContent = frameThicknessInput.value + "%";
+      if (frameSelect.value === "none") {
+        frameSelect.value = "square";
+      }
       updatePreview();
     });
 
@@ -67,22 +80,21 @@ document.addEventListener("DOMContentLoaded", () => {
 
     centerImageInput.addEventListener("change", handleCenterImageUpload);
 
-    // Form submission - OPEN MODAL INSTEAD OF DIRECT GENERATE
+    // Form submission
     form.addEventListener("submit", (e) => {
       e.preventDefault();
       const url = urlInput.value.trim();
       
       if (!url) {
-        showAlert('กรุณาใส่ URL', 'warning');
+        alert('กรุณาใส่ URL');
         return;
       }
       
       if (!url.startsWith("http")) {
-        showAlert('กรุณาใส่ URL ที่ถูกต้อง (ต้องเริ่มต้นด้วย http หรือ https)', 'warning');
+        alert('กรุณาใส่ URL ที่ถูกต้อง (ต้องเริ่มต้นด้วย http หรือ https)');
         return;
       }
 
-      // Reset input and open modal
       filenameInput.value = "";
       showModal();
     });
@@ -95,7 +107,6 @@ document.addEventListener("DOMContentLoaded", () => {
       if (e.target === filenameModal) hideModal();
     });
     
-    // Support Enter key in modal input
     filenameInput.addEventListener("keypress", (e) => {
       if (e.key === "Enter") handleModalConfirm();
     });
@@ -120,28 +131,25 @@ document.addEventListener("DOMContentLoaded", () => {
     const url = urlInput.value.trim();
 
     if (userInput) {
-      // User provided name
       finalDownloadName = userInput;
     } else {
-      // User didn't answer -> Use URL + swiftqr
       const cleanUrl = url
-        .replace(/(^\w+:|^)\/\//, '') // Remove http://
-        .replace(/[^a-zA-Z0-9]/g, '_') // Replace special chars
-        .substring(0, 50); // Limit length
+        .replace(/(^\w+:|^)\/\//, '') 
+        .replace(/[^a-zA-Z0-9]/g, '_') 
+        .substring(0, 50); 
       
       finalDownloadName = `${cleanUrl}_swiftqr`;
     }
 
-    // Ensure .png extension
     if (!finalDownloadName.toLowerCase().endsWith('.png')) {
       finalDownloadName += '.png';
     }
 
     hideModal();
-    generateQRCode(); // Proceed to generation
+    generateQRCode(); 
   }
 
-  // --- Generation Logic (Moved from form submit) ---
+  // --- Generation Logic ---
   function generateQRCode() {
     const url = urlInput.value.trim();
     const size = parseInt(sizeInput.value);
@@ -160,10 +168,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
     currentQRCode = qrCanvas.toDataURL("image/png");
     
-    // Scroll to result
-    qrResultContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    
-    showAlert(`สร้าง QR Code สำเร็จ! ชื่อไฟล์ที่จะดาวน์โหลด: ${finalDownloadName}`, 'success');
+    if (window.innerWidth < 992) {
+      qrResultContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
   }
 
   function handleCenterImageUpload(e) {
@@ -212,7 +219,9 @@ document.addEventListener("DOMContentLoaded", () => {
     qr.make();
 
     const ctx = canvas.getContext("2d");
-    const borderThickness = (size * frameThickness) / 100;
+    
+    // [FIXED BUG] ปรับให้เป็น 0 ทันทีหากเลือก "none" เพื่อไม่ให้เหลือพื้นที่ว่างสีขาวรอบตัว QR ตอนไม่ต้องการกรอบ
+    const borderThickness = (frameShape !== "none") ? (size * frameThickness) / 100 : 0;
     const totalSize = size + borderThickness * 2;
 
     canvas.width = totalSize;
@@ -262,6 +271,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     ctx.restore();
 
+    // ส่วนการวาดสีกรอบลงพื้นผิว Canvas
     if (frameShape !== "none") {
       ctx.strokeStyle = frameColor;
       ctx.lineWidth = borderThickness;
@@ -303,17 +313,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function downloadQRCode() {
     if (!currentQRCode) {
-      showAlert('ไม่มี QR Code ที่จะดาวน์โหลด', 'warning');
+      alert('ไม่มี QR Code ที่จะดาวน์โหลด');
       return;
     }
-    
     const link = document.createElement("a");
     link.href = currentQRCode;
-    // USE THE SET FILENAME HERE
     link.download = finalDownloadName; 
     link.click();
-    
-    showAlert('กำลังดาวน์โหลด QR Code...', 'info');
   }
 
   function resetForm() {
@@ -324,42 +330,18 @@ document.addEventListener("DOMContentLoaded", () => {
     qrResultContainer.style.display = "none";
     qrResultContainer.classList.remove('fade-in');
     clearBtn.disabled = true;
-    thicknessValue.textContent = "5";
+    thicknessValue.textContent = "5%";
     
-    colorInput.value = "#000000";
+    colorInput.value = "#0f172a";
     bgColorInput.value = "#FFFFFF";
-    frameColorInput.value = "#007bff";
+    frameColorInput.value = "#2563eb";
     
     updatePreview();
-    
-    showAlert('ล้างข้อมูลทั้งหมดแล้ว', 'info');
   }
 
   function toggleDarkMode() {
     const isDarkMode = darkModeToggle.checked;
     document.body.classList.toggle('dark-mode', isDarkMode);
     localStorage.setItem('darkMode', isDarkMode);
-  }
-
-  function showAlert(message, type) {
-    const existingAlert = document.querySelector('.alert');
-    if (existingAlert) {
-      existingAlert.remove();
-    }
-    
-    const alert = document.createElement('div');
-    alert.className = `alert alert-${type} alert-dismissible fade show mt-3`;
-    alert.innerHTML = `
-      ${message}
-      <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-    `;
-    
-    form.parentNode.insertBefore(alert, form.nextSibling);
-    
-    setTimeout(() => {
-      if (alert.parentNode) {
-        alert.remove();
-      }
-    }, 4000);
   }
 });

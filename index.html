@@ -4,181 +4,197 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Swift QR</title>
+  <meta name="description" content="Swift QR" />
+  <meta name="author" content="Charifkub,Shoper Gamer,Animexo" />
+  <meta name="robots" content="index, follow" /> 
   <link href="css/bootstrap.min.css" rel="stylesheet">
-  <link href="css/all.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="css/style.css">
-  <link rel="icon" href="SwiftQR.webp" type="image/x-icon">
+  <link href="css/all.min.css"       rel="stylesheet">
+  <link href="css/style.css"         rel="stylesheet">
+  <link rel="icon" href="SwiftQR.webp" type="image/webp">
 </head>
 <body>
-  <div class="container mt-5">
+
+  <main class="container main-layout">
     <div class="row justify-content-center">
-      <div class="col-md-10 col-lg-8">
-        <div class="card shadow-lg border-0">
-          <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center py-3">
-            <div class="d-flex align-items-center">
-              <i class="fas fa-qrcode me-2 fs-4"></i>
-              <h2 class="m-0">Swift QR Generator</h2>
+      <div class="col-12 col-xl-11">
+        <div class="app-card">  
+          <header class="app-header">
+            <div class="header-brand">
+              <div class="brand-icon">
+                <i class="fas fa-qrcode" aria-hidden="true"></i>
+              </div>
+              <div>
+                <h1 class="app-title">Swift QR</h1>
+                <p class="app-subtitle">สร้าง QR Code สไตล์มินิมอลในไม่กี่วินาที</p>
+              </div>
             </div>
-            <div class="form-check form-switch">
-              <input class="form-check-input" type="checkbox" id="darkModeToggle">
-              <label class="form-check-label" for="darkModeToggle">
-                <i class="fas fa-moon"></i> Dark Mode
+
+            <div class="theme-switch-wrapper" title="เปลี่ยนโหมดสี">
+              <input type="checkbox" class="form-check-input" id="darkModeToggle" role="switch">
+              <label for="darkModeToggle" class="theme-label">
+                <i class="fas fa-moon" aria-hidden="true"></i>
               </label>
             </div>
-          </div>
+          </header>
 
-          <div class="card-body p-4">
-            <form id="qrForm">
-              <div class="mb-4">
-                <label for="urlInput" class="form-label fw-bold">
-                  <i class="fas fa-link me-2"></i>ลิงก์ (URL):
-                </label>
-                <input type="url" class="form-control form-control-lg" id="urlInput" placeholder="https://example.com" required>
+          <div class="app-body">
+            <div class="row g-4">
+              
+              <div class="col-12 col-lg-7 form-panel">
+                <form id="qrForm" novalidate>
+
+                  <div class="form-group-custom mb-4">
+                    <label for="urlInput" class="custom-label">
+                      <i class="fas fa-link me-2"></i>ลิงก์ปลายทาง (URL)
+                    </label>
+                    <input type="url" class="form-control custom-input"
+                           id="urlInput" placeholder="https://example.com"
+                           autocomplete="url" required>
+                    <span class="input-hint">ระบุลิงก์ที่เริ่มต้นด้วย http:// หรือ https://</span>
+                  </div>
+
+                  <h2 class="sub-section-title">ขนาดและโทนสี</h2>
+                  
+                  <div class="row g-3 mb-4">
+                    <div class="col-12">
+                      <label for="sizeInput" class="custom-label">ขนาดความกว้าง (px)</label>
+                      <input type="number" class="form-control custom-input" id="sizeInput" min="100" max="1000" value="300">
+                    </div>
+                    
+                    <div class="col-12">
+                      <div class="color-picker-row">
+                        <div class="color-box">
+                          <label for="colorInput">สีของ QR</label>
+                          <input type="color" id="colorInput" value="#0f172a">
+                        </div>
+                        <div class="color-box">
+                          <label for="bgColorInput">พื้นหลัง</label>
+                          <input type="color" id="bgColorInput" value="#ffffff">
+                        </div>
+                        <div class="color-box">
+                          <label for="frameColorInput">สีกรอบ</label>
+                          <input type="color" id="frameColorInput" value="#2563eb">
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <h2 class="sub-section-title">รูปแบบดีไซน์</h2>
+                  
+                  <div class="row g-3 mb-4">
+                    <div class="col-6">
+                      <label for="shapeSelect" class="custom-label">ลักษณะจุดลาย</label>
+                      <select class="form-select custom-select" id="shapeSelect">
+                        <option value="square">สี่เหลี่ยมคลาสสิก</option>
+                        <option value="circle">โมเดิร์นวงกลม</option>
+                        <option value="dot">จุดไข่ปลา</option>
+                      </select>
+                    </div>
+                    <div class="col-6">
+                      <label for="frameSelect" class="custom-label">สไตล์กรอบภายนอก</label>
+                      <select class="form-select custom-select" id="frameSelect">
+                        <option value="none">ไม่มีกรอบ</option>
+                        <option value="square">กรอบสี่เหลี่ยม</option>
+                        <option value="rounded">กรอบมุมมน</option>
+                      </select>
+                    </div>
+                    <div class="col-12">
+                      <label for="frameThicknessInput" class="custom-label d-flex justify-content-between">
+                        <span>ความหนาของเส้นกรอบ</span>
+                        <span id="thicknessValue" class="badge-thickness">5%</span>
+                      </label>
+                      <input type="range" class="form-range custom-range" id="frameThicknessInput" min="2" max="10" value="5" step="1">
+                    </div>
+                  </div>
+
+                  <h2 class="sub-section-title">โลโก้ตรงกลาง</h2>
+                  
+                  <div class="toggle-container mb-3">
+                    <label class="toggle-card" for="centerImageCheck">
+                      <div class="d-flex align-items-center gap-3">
+                        <i class="fas fa-image text-muted fs-5"></i>
+                        <div>
+                          <span class="toggle-title">ใส่รูปภาพ/โลโก้ตรงกลาง</span>
+                          <p class="toggle-desc mb-0">ระบบจะเว้นพื้นที่ตรงกลางและวางรูปภาพของคุณลงไป</p>
+                        </div>
+                      </div>
+                      <input type="checkbox" class="form-check-input" id="centerImageCheck" role="switch">
+                    </label>
+                  </div>
+
+                  <div class="mb-4 upload-zone" id="centerImageContainer" style="display:none;">
+                    <label for="centerImageInput" class="upload-box">
+                      <i class="fas fa-cloud-upload-alt upload-icon"></i>
+                      <span>คลิกเพื่อเลือกรูปภาพโลโก้</span>
+                      <p class="upload-limit">รองรับ PNG, JPG, SVG, WebP (ขนาดไฟล์ไม่เกิน 2MB)</p>
+                    </label>
+                    <input type="file" id="centerImageInput" accept="image/*" class="d-none">
+                  </div>
+
+                  <div class="action-grid mt-4">
+                    <button type="submit" class="btn-generate">
+                      <i class="fas fa-bolt me-2"></i>สร้าง QR Code ทันที
+                    </button>
+                    <button type="button" class="btn-clear" id="clearBtn" disabled title="ล้างข้อมูล">
+                      <i class="fas fa-trash-alt"></i>
+                    </button>
+                  </div>
+                </form>
               </div>
 
-              <div class="row g-3 mb-4">
-                <div class="col-md-4">
-                  <label for="sizeInput" class="form-label fw-bold">
-                    <i class="fas fa-arrows-alt-h me-2"></i>ขนาด (px):
-                  </label>
-                  <input type="number" class="form-control" id="sizeInput" min="100" max="1000" value="300">
+              <div class="col-12 col-lg-5 preview-panel">
+                <div class="sticky-sidebar">
+                  
+                  <div class="preview-card">
+                    <span class="preview-badge"><span class="dot-blink"></span>ตัวอย่างสด</span>
+                    <div class="canvas-holder">
+                      <canvas id="previewCanvas"></canvas>
+                    </div>
+                  </div>
+
+                  <div id="qrResultContainer" class="result-card" style="display:none;">
+                    <div class="success-banner">
+                      <i class="fas fa-check-circle me-2"></i> ถอดรหัสเสร็จสมบูรณ์!
+                    </div>
+                    <div class="canvas-holder final-holder mb-3">
+                      <canvas id="qrCanvas"></canvas>
+                    </div>
+                    <button class="btn-download" id="downloadBtn">
+                      <i class="fas fa-download me-2"></i> ดาวน์โหลดภาพไฟล์ความละเอียดสูง
+                    </button>
+                  </div>
+
                 </div>
-                <div class="col-md-4">
-                  <label for="colorInput" class="form-label fw-bold">
-                    <i class="fas fa-palette me-2"></i>สีของ QR:
-                  </label>
-                  <input type="color" class="form-control form-control-color" id="colorInput" value="#000000" title="Choose QR color">
-                </div>
-                <div class="col-md-4">
-                  <label for="bgColorInput" class="form-label fw-bold">
-                    <i class="fas fa-fill me-2"></i>สีพื้นหลัง:
-                  </label>
-                  <input type="color" class="form-control form-control-color" id="bgColorInput" value="#FFFFFF" title="Choose background color">
-                </div>
               </div>
 
-              <div class="row g-3 mb-4">
-                <div class="col-md-4">
-                  <label for="shapeSelect" class="form-label fw-bold">
-                    <i class="fas fa-shapes me-2"></i>ลักษณะ QR:
-                  </label>
-                  <select class="form-select" id="shapeSelect">
-                    <option value="square">Square</option>
-                    <option value="circle">Circle</option>
-                    <option value="dot">Dot</option>
-                  </select>
-                </div>
-                <div class="col-md-4">
-                  <label for="frameSelect" class="form-label fw-bold">
-                    <i class="fas fa-square-full me-2"></i>ลักษณะกรอบ:
-                  </label>
-                  <select class="form-select" id="frameSelect">
-                    <option value="none">ไม่มีกรอบ</option>
-                    <option value="square">มีกรอบ</option>
-                  </select>
-                </div>
-                <div class="col-md-4">
-                  <label for="frameColorInput" class="form-label fw-bold">
-                    <i class="fas fa-border-style me-2"></i>สีกรอบ:
-                  </label>
-                  <input type="color" class="form-control form-control-color" id="frameColorInput" value="#007bff" title="Choose frame color">
-                </div>
-              </div>
-
-              <div class="mb-4">
-                <label for="frameThicknessInput" class="form-label fw-bold">
-                  <i class="fas fa-arrows-alt-v me-2"></i>ความหนากรอบ (%): <span id="thicknessValue">5</span>%
-                </label>
-                <input type="range" class="form-range" id="frameThicknessInput" min="2" max="10" value="5">
-              </div>
-
-              <div class="form-check form-switch mb-3">
-                <input type="checkbox" class="form-check-input" id="centerImageCheck">
-                <label class="form-check-label fw-bold" for="centerImageCheck">
-                  <i class="fas fa-image me-2"></i>เพิ่มรูปภาพตรงกลาง
-                </label>
-              </div>
-
-              <div class="mb-4" id="centerImageContainer" style="display:none;">
-                <label for="centerImageInput" class="form-label fw-bold">
-                  <i class="fas fa-upload me-2"></i>อัพโหลดภาพ (สูงสุด 25%):
-                </label>
-                <input type="file" class="form-control" id="centerImageInput" accept="image/*">
-              </div>
-
-              <div class="d-flex justify-content-between gap-3">
-                <button type="submit" class="btn btn-primary btn-lg w-100 py-2">
-                  <i class="fas fa-bolt me-2"></i>Generate QR
-                </button>
-                <button type="button" class="btn btn-outline-danger btn-lg w-100 py-2" id="clearBtn" disabled>
-                  <i class="fas fa-trash me-2"></i>Clear
-                </button>
-              </div>
-            </form>
-
-            <hr class="my-4">
-
-            <div class="text-center">
-              <h4 class="mb-3">
-                <i class="fas fa-eye me-2"></i>ตัวอย่างแบบเรียลไทม์
-              </h4>
-              <div class="qr-code-wrapper mb-3 p-3 rounded-3">
-                <canvas id="previewCanvas"></canvas>
-              </div>
             </div>
+          </div> </div> </div>
+    </div>
+  </main>
 
-            <div class="text-center mt-4" id="qrResultContainer" style="display:none;">
-              <h4 class="mb-3">
-                <i class="fas fa-check-circle text-success me-2"></i>QR Code ที่สร้างได้
-              </h4>
-              <div class="qr-code-wrapper mb-3 p-3 rounded-3">
-                <canvas id="qrCanvas"></canvas>
-              </div>
-              <button class="btn btn-success btn-lg px-4" id="downloadBtn">
-                <i class="fas fa-download me-2"></i>ดาวน์โหลด QR
-              </button>
-            </div>
-          </div>
-        </div>
+  <div id="filenameModal" class="custom-modal" role="dialog" aria-modal="true">
+    <div class="modal-box">
+      <div class="modal-header-custom">
+        <h3 class="modal-title-custom"><i class="fas fa-file-signature me-2"></i>บันทึกไฟล์ภาพ</h3>
+        <button class="close-modal-btn" aria-label="ปิด">&times;</button>
+      </div>
+      <div class="modal-body-custom">
+        <label for="filenameInput" class="custom-label mb-2">ตั้งชื่อไฟล์ของคุณ</label>
+        <input type="text" id="filenameInput" class="form-control custom-input" placeholder="ตัวอย่าง: my_shop_qr" autocomplete="off">
+        <p class="modal-hint mt-2">หากเว้นว่างไว้ ระบบจะดึงชื่อเว็บไซต์มาตั้งให้อัตโนมัติในนามสกุล .png</p>
+      </div>
+      <div class="modal-footer-custom">
+        <button id="cancelModalBtn" class="btn-modal-cancel">ยกเลิก</button>
+        <button id="confirmModalBtn" class="btn-modal-confirm">ตกลง</button>
       </div>
     </div>
   </div>
 
-
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div id="filenameModal" class="custom-modal">
-    <div class="custom-modal-content">
-      <div class="custom-modal-header">
-        <h4 class="m-0"><i class="fas fa-file-signature me-2"></i>ตั้งชื่อไฟล์ QR Code</h4>
-        <button class="close-modal-btn">&times;</button>
-      </div>
-      <div class="custom-modal-body">
-        <p class="mb-2">คุณต้องการตั้งชื่อไฟล์ภาพหรือไม่?</p>
-        <input type="text" id="filenameInput" class="form-control" placeholder="ระบุชื่อไฟล์ (ไม่ต้องใส่นามสกุล)" autocomplete="off">
-        <p class="text-muted small mt-2 mb-0">
-          <i class="fas fa-info-circle me-1"></i>
-          หากเว้นว่าง ระบบจะใช้ชื่อจาก URL และต่อท้ายด้วย <strong>swiftqr</strong>
-        </p>
-      </div>
-      <div class="custom-modal-footer">
-        <button id="cancelModalBtn" class="btn btn-secondary">ยกเลิก</button>
-        <button id="confirmModalBtn" class="btn btn-primary">
-          <i class="fas fa-check me-2"></i>ตกลง
-        </button>
-      </div>
-    </div>
-  </div>
-
-  <footer class="text-center mt-5 py-4 bg-light">
-      <p class="mt-3 text-muted">© <script>document.write(new Date().getFullYear())  </script> Swift QR Generator. All rights reserved.</p>
+  <footer class="text-center py-4">
+    <p class="text-muted mb-0">© <span id="fyear"></span> Swift QR — ออกแบบมาเพื่อความเรียบง่าย</p>
   </footer>
 
+  <script>document.getElementById('fyear').textContent = new Date().getFullYear();</script>
   <script src="js/qrcode.min.js"></script>
   <script src="js/index.js"></script>
 </body>
