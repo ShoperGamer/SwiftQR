@@ -1,113 +1,212 @@
+
 <div align="center">
-  <h1>SwiftQR: เครื่องมือสร้าง QR Code ที่ใช้งานง่ายและรวดเร็ว</h1>
+  <h1>SwiftQR: Modern, Real-Time & Offline-Ready QR Code Generator</h1>
+  <p>An elegant, lightweight, and customizable QR Code generator built for speed, performance, and offline reliability.</p>
   <p>
     <img src="https://img.shields.io/badge/Status-Completed-brightgreen?style=for-the-badge&logo=github" alt="Status"/>
-    <img src="https://img.shields.io/badge/Language-HTML%2FCSS%2FJavaScript-blue?style=for-the-badge&logo=javascript" alt="Language"/>
+    <img src="https://img.shields.io/badge/Language-HTML5%2FCSS3%2FJavaScript-blue?style=for-the-badge&logo=javascript" alt="Language"/>
     <img src="https://img.shields.io/badge/Framework-Bootstrap_5-purple?style=for-the-badge&logo=bootstrap" alt="Framework"/>
+    <img src="https://img.shields.io/badge/PWA-Offline--Ready-orange?style=for-the-badge&logo=pwa" alt="PWA"/>
     <img src="https://img.shields.io/badge/License-MIT-lightgrey?style=for-the-badge&logo=github" alt="License"/>
   </p>
 </div>
 
 ---
 
-## 🇹🇭 SwiftQR: เครื่องมือสร้าง QR Code ที่ใช้งานง่ายและรวดเร็ว
+## 🇬🇧 English: SwiftQR
 
-SwiftQR เป็นเว็บแอปพลิเคชันที่ช่วยให้คุณสร้าง QR Code ได้อย่างง่ายดายและรวดเร็ว รองรับการปรับแต่งหลากหลาย เช่น การปรับขนาด, เลือกฟอร์แมตภาพ, และเพิ่มโลโก้ตรงกลาง QR Code นอกจากนี้ยังมีโหมด Dark Mode เพื่อประสบการณ์การใช้งานที่สบายตายิ่งขึ้น
+**SwiftQR** is a high-performance, client-side web application for creating custom QR codes instantly. Built with a focus on UX/UI, modern performance standards, and offline usability, SwiftQR allows users to personalize QR code patterns, frame styles, center dots, and center logos in real-time.
+
+### ✨ Key Features
+
+* **⚡ Real-Time Live Preview:** Instant QR code rendering as you type or paste URLs, with debounced performance (150ms) optimized for smooth 60fps typing on mobile devices.
+* **📶 100% Offline Support (PWA Service Worker):** Features a Service Worker (`sw.js`) with a *Network-First* caching strategy. Open it once, and it works seamlessly without an internet connection.
+* **🎨 Rich Styling Options:**
+  * **Pattern Shapes (Dots):** Square, Dots, Rounded, Extra-Rounded, Classy, and Classy-Rounded.
+  * **Outer Frame Styles:** Square, Dot, Extra-Rounded.
+  * **Inner Corner Styles:** Square, Dot.
+  * **Custom Palette:** Full control over QR dots, background, and frame colors.
+* **🖼️ Center Logo Integration:** Upload custom logos (PNG, JPG, SVG, WebP) with auto-scaling (20%–40%), background dot clearing, and automatic **Error Correction Level H (30%)** escalation to ensure maximum scan reliability.
+* **🚀 Ultra-Lightweight & Fast:** 100% Inline SVG icons replace heavy font libraries, saving ~100KB in page weight and eliminating extra HTTP requests.
+* **🌙 Dark Mode Support:** Seamless theme switching stored in local storage for a comfortable experience day or night.
+* **💾 High-Res Download:** Save high-resolution PNG images with automated or custom filename support.
+
+### 🛠️ Technologies Used
+
+* **HTML5:** Semantic HTML structure with direct Inline SVG icons.
+* **CSS3:** Custom responsive layout, CSS variables, and Dark Mode context styling.
+* **JavaScript (ES6+):** Pure client-side logic, debounced input events, and Service Worker registration.
+* **Bootstrap 5.3:** Modern responsive layout framework.
+* **qr-code-styling:** Advanced SVG/Canvas vector QR code rendering library.
+
+### 🚀 Getting Started
+
+1. **Clone the repository:**
+   ```bash
+   git clone [https://github.com/ShoperGamer/SwiftQR.git](https://github.com/ShoperGamer/SwiftQR.git)
+2.  **Launch the app:**
+    
+    Open `index.html` directly in your web browser, or serve it via any static web server (e.g., Live Server in VS Code).
+    
+      
+    
+
+### 💡 How to Use
+
+1.  **Enter Destination URL:** Type or paste your link into the "Destination URL" field to see live QR updates.
+    
+      
+    
+2.  **Customize Appearance:**
+    
+      
+    -   Adjust dimensions (px) and margins.
+        
+          
+        
+    -   Pick custom colors for QR dots, background, and frame borders.
+        
+          
+        
+    -   Select your preferred shapes for dots, outer corners, and inner dots using the horizontal icon cards.
+        
+          
+        
+3.  **Add Logo (Optional):** Enable the "Center Logo" switch, upload your image file, and adjust logo sizing and padding.
+    
+      
+    
+4.  **Download:** Click **"Download High-Res Image"**, set your desired filename in the modal prompt, and save your PNG file.
+    
+      
+    
+
+## 🇹🇭 Thai: SwiftQR (เครื่องมือสร้าง QR Code สไตล์มินิมอล)
+
+**SwiftQR** เป็นเว็บแอปพลิเคชันสำหรับสร้างและปรับแต่ง QR Code ที่เน้นความเรียบง่าย ประสิทธิภาพสูง และรองรับการทำงานแบบเรียลไทม์ ตัวระบบทำงานบนฝั่งผู้ใช้งาน (Client-Side) ทั้งหมด พร้อมรองรับการใช้งานแบบออฟไลน์ 100%
+
+  
 
 ### ✨ คุณสมบัติหลัก
 
-* **สร้าง QR Code จาก URL:** เพียงแค่ใส่ URL ที่ต้องการ ก็สามารถสร้าง QR Code ได้ทันที
-* **ปรับขนาด QR Code:** กำหนดขนาดของ QR Code ได้ตามต้องการ
-* **เลือกฟอร์แมตภาพ:** รองรับการดาวน์โหลด QR Code ในรูปแบบ PNG, JPG, WEBP
-* **เพิ่มโลโก้ตรงกลาง:** สามารถอัปโหลดรูปภาพเพื่อใส่เป็นโลโก้ตรงกลาง QR Code ได้ (เหมาะสำหรับไฟล์ PNG โปร่งใส)
-* **Dark Mode:** สลับระหว่างโหมดสว่างและโหมดมืดเพื่อความสะดวกสบายในการใช้งาน
-* **Delete QRCode:** ปุ่มล้าง QRCode เพื่อเริ่มต้นใหม่
+-   **⚡ แสดงผลเรียลไทม์ (Live Preview):** สแกนและสร้าง QR Code ทันทีทุกครั้งที่มีการพิมพ์หรือวาง URL พร้อมระบบ Debouncing (150ms) ป้องกันเครื่องกระตุกบนมือถือ
+    
+      
+    
+-   **📶 รองรับการใช้งานแบบออฟไลน์ (PWA Service Worker):** ฝังระบบ `sw.js` (Network-First Cache) เปิดใช้งานเว็บเพียงครั้งเดียวก็สามารถเปิดใช้งานต่อได้ทันทีแม้ไม่มีสัญญาณอินเทอร์เน็ต
+    
+      
+    
+-   **🎨 ตัวเลือกปรับแต่งดีไซน์ที่หลากหลาย:**
+    
+      
+    -   **สไตล์รูปทรงจุด (Dots):** สี่เหลี่ยม, วงกลม/จุดไข่ปลา, มุมมน, มนพิเศษ, คลาสซี่เรียบหรู และคลาสซี่มุมมน
+        
+          
+        
+    -   **สไตล์เส้นขอบนอก (Outer Corners):** สี่เหลี่ยม, วงกลม, มุมมนพิเศษ
+        
+          
+        
+    -   **สไตล์เซ็นเตอร์ใน (Inner Dots):** สี่เหลี่ยม, วงกลม
+        
+          
+        
+    -   **ปรับแต่งโทนสี:** ปรับสีจุดลาย, สีพื้นหลัง และสีกรอบได้อย่างอิสระ
+        
+          
+        
+-   **🖼️ ใส่โลโก้ตรงกลาง:** รองรับการอัปโหลดรูปภาพ (PNG, JPG, SVG, WebP) ปรับขนาดสัดส่วน (20%–40%) พร้อมระบบสลับไปใช้ **Error Correction Level H (30%)** อัตโนมัติเพื่อให้สแกนติดง่ายและแม่นยำที่สุด
+    
+      
+    
+-   **🚀 โหลดไวกว่าด้วย Inline SVG:** ตัดการโหลดไฟล์ฟอนต์และ CSS ภายนอกที่ไม่จำเป็นออกทั้งหมด ช่วยลดขนาดหน้าเว็บลงได้กว่า 100KB
+    
+      
+    
+-   **🌙 Dark Mode:** สลับระหว่างโหมดสว่างและโหมดมืดอย่างลงตัว พร้อมบันทึกสถานะลงใน Local Storage
+    
+      
+    
+-   **💾 ดาวน์โหลดความละเอียดสูง:** บันทึกไฟล์ภาพ PNG ความละเอียดสูง พร้อมระบบตั้งชื่อไฟล์ให้อัตโนมัติ
+    
+      
+    
 
 ### 🛠️ เทคโนโลยีที่ใช้
 
-* **HTML5:** โครงสร้างหลักของเว็บเพจ
-* **CSS3:** การจัดรูปแบบและดีไซน์
-* **JavaScript:** การทำงานของตรรกะและฟังก์ชันต่างๆ
-* **Bootstrap 5:** Framework สำหรับการออกแบบ Responsive และ UI Components
-* **QRCode.js:** ไลบรารีสำหรับสร้าง QR Code
-
+-   **HTML5:** โครงสร้างหลักเว็บเพจ ฝังไอคอน SVG Inline คมชัด
+    
+      
+    
+-   **CSS3:** ตกแต่งหน้าตาแบบมินิมอล ปรับแต่งตามธีม Dark Mode
+    
+      
+    
+-   **JavaScript (ES6+):** ควบคุมตรรกะการประมวลผลระบบเรียลไทม์ และระบบ Service Worker
+    
+      
+    
+-   **Bootstrap 5.3:** โครงสร้าง Grid Layout แบบ Responsive
+    
+      
+    
+-   **qr-code-styling:** ไลบรารีสำหรับประมวลผลและวาด QR Code เวกเตอร์ Canvas/SVG
+    
+      
+    
 
 ### 🚀 การเริ่มต้นใช้งาน
 
 1.  **โคลนโปรเจกต์:**
-    ```bash
-    git clone [https://github.com/your-username/SwiftQR.git](https://github.com/your-username/SwiftQR.git)
+    
+      
+    
+    Bash
+    
     ```
-2.  **เปิดไฟล์ `index.html`:**
-    เปิดไฟล์ `index.html` ในเว็บเบราว์เซอร์ของคุณ
+    git clone [https://github.com/ShoperGamer/SwiftQR.git](https://github.com/ShoperGamer/SwiftQR.git)
+    ```
+    
+2.  **เปิดใช้งาน:**
+    
+    เปิดไฟล์ `index.html` ผ่านเบราว์เซอร์ของคุณ หรือรันผ่าน Live Server บน VS Code
+    
+      
+    
 
 ### 💡 วิธีใช้งาน
 
-1.  **ป้อน URL:** ใส่ URL ที่ต้องการสร้าง QR Code ลงในช่อง "Enter URL:"
-2.  **ปรับแต่ง (ไม่บังคับ):**
-    * **Size:** เลือกขนาดของ QR Code ที่ต้องการ
-    * **Format:** เลือกนามสกุลไฟล์สำหรับดาวน์โหลด (PNG, JPG, WEBP)
-    * **Add Center Image:** หากต้องการเพิ่มโลโก้ตรงกลาง QR Code ให้ติ๊กช่องนี้ แล้วอัปโหลดไฟล์ภาพที่ต้องการ
-3.  **สร้าง QR Code:** คลิกปุ่ม "Generate QR Code"
-4.  **ดาวน์โหลด/ล้าง:** เมื่อ QR Code ปรากฏขึ้น คุณสามารถคลิก "Download QR Code" เพื่อบันทึก หรือ "Clear QR Code" เพื่อล้างข้อมูลและสร้างใหม่
-5.  **สลับ Dark Mode:** ใช้ปุ่มสลับ "Dark Mode" ที่มุมขวาบนของ Card เพื่อเปลี่ยนธีม
-
-### 🤝 การมีส่วนร่วม
-
-ยินดีรับการมีส่วนร่วม! หากคุณมีข้อเสนอแนะ, พบข้อผิดพลาด, หรือต้องการเพิ่มคุณสมบัติใหม่ๆ สามารถ Fork โปรเจกต์นี้และสร้าง Pull Request ได้เลย
-
-### 📄 License
-
-โปรเจกต์นี้อยู่ภายใต้ MIT License - ดูไฟล์ [LICENSE](LICENSE) สำหรับรายละเอียดเพิ่มเติม
-
----
-
-## 🇬🇧 SwiftQR: Easy & Fast QR Code Generator
-
-SwiftQR is a web application that allows you to easily and quickly generate QR Codes. It supports various customization options such as adjusting size, selecting image format, and adding a center logo to the QR Code. It also features a Dark Mode for a more comfortable viewing experience.
-
-### ✨ Key Features
-
-* **Generate QR Code from URL:** Simply enter your desired URL to instantly create a QR Code.
-* **Adjust QR Code Size:** Define the dimensions of your QR Code as needed.
-* **Select Image Format:** Supports downloading QR Codes in PNG, JPG, WEBP
-* **Add Center Logo:** Upload an image to embed as a logo in the center of your QR Code (best for transparent PNGs).
-* **Dark Mode:** Toggle between light and dark modes for enhanced user comfort.
-* **Delete QR Code :** A dedicated button to clear  QR Code
-
-### 🛠️ Technologies Used
-
-* **HTML5:** Core structure of the web page.
-* **CSS3:** Styling and visual design.
-* **JavaScript:** Logic and functionality.
-* **Bootstrap 5:** Framework for responsive design and UI components.
-* **QRCode.js:** Library for QR Code generation.
-
-### 🚀 Getting Started
-
-1.  **Clone the repository:**
-    ```bash
-    git clone [https://github.com/your-username/SwiftQR.git](https://github.com/your-username/SwiftQR.git)
-    ```
-2.  **Open `index.html`:**
-    Open the `index.html` file in your web browser.
-
-### 💡 How to Use
-
-1.  **Enter URL:** Input the URL you want to convert into a QR Code in the "Enter URL:" field.
-2.  **Customize (Optional):**
-    * **Size:** Select your preferred QR Code size.
-    * **Format:** Choose the file extension for your download (PNG, JPG, WEBP).
-    * **Add Center Image:** If you wish to add a logo, check this box and upload your image file.
-3.  **Generate QR Code:** Click the "Generate QR Code" button.
-4.  **Download/Clear:** Once the QR Code appears, you can click "Download QR Code" to save it or "Clear QR Code" to reset and create a new one.
-5.  **Toggle Dark Mode:** Use the "Dark Mode" switch in the top right corner of the card to change the theme.
+1.  **ใส่ลิงก์ปลายทาง:** วางหรือพิมพ์ URL ลงในช่อง "ลิงก์ปลายทาง (URL)" เพื่อดูตัวอย่าง QR Code ทันที
+    
+      
+    
+2.  **ปรับแต่งดีไซน์:**
+    
+      
+    -   เลือกโทนสีของจุด QR, พื้นหลัง และสีกรอบ
+        
+          
+        
+    -   คลิกเลือกรูปแบบจุดลาย เส้นขอบ และจุดมุมผ่านปุ่มการ์ดไอคอนแนวนอน
+        
+          
+        
+3.  **ใส่โลโก้ตรงกลาง (ตัวเลือกเสริม):** เปิดสวิตช์ "ใส่รูปภาพ/โลโก้ตรงกลาง" อัปโหลดไฟล์รูปภาพ และปรับขนาดสัดส่วนตามต้องการ
+    
+      
+    
+4.  **ดาวน์โหลด:** กดปุ่ม **"ดาวน์โหลดภาพไฟล์ความละเอียดสูง"** ตั้งชื่อไฟล์ในหน้าต่าง Pop-up แล้วบันทึกภาพ PNG ได้ทันที
+    
+      
+    
 
 ### 🤝 Contributing
 
-Contributions are welcome! If you have suggestions, find bugs, or want to add new features, feel free to fork this repository and create a pull request.
+Contributions, issues, and feature requests are welcome! Feel free to check the [issues page](https://www.google.com/search?q=https://github.com/ShoperGamer/SwiftQR/issues&authuser=4).
+
+  
 
 ### 📄 License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
+This project is licensed under the [MIT License](https://www.google.com/search?q=https://github.com/ShoperGamer/SwiftQR/blob/main/LICENSE&authuser=4).

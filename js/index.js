@@ -5,19 +5,27 @@ document.addEventListener("DOMContentLoaded", () => {
   const sizeInput = document.getElementById("sizeInput");
   const colorInput = document.getElementById("colorInput");
   const bgColorInput = document.getElementById("bgColorInput");
-  const shapeSelect = document.getElementById("shapeSelect");
-  const frameSelect = document.getElementById("frameSelect");
+  
   const frameColorInput = document.getElementById("frameColorInput");
   const frameThicknessInput = document.getElementById("frameThicknessInput");
   const thicknessValue = document.getElementById("thicknessValue");
+
+  // Canvas Containers
   const previewCanvas = document.getElementById("previewCanvas");
   const qrCanvas = document.getElementById("qrCanvas");
   const qrResultContainer = document.getElementById("qrResultContainer");
   const clearBtn = document.getElementById("clearBtn");
   const downloadBtn = document.getElementById("downloadBtn");
+
+  // Center Logo Options
   const centerImageCheck = document.getElementById("centerImageCheck");
   const centerImageInput = document.getElementById("centerImageInput");
   const centerImageContainer = document.getElementById("centerImageContainer");
+  const logoSizeInput = document.getElementById("logoSizeInput");
+  const logoMarginInput = document.getElementById("logoMarginInput");
+  const hideBgDotsCheck = document.getElementById("hideBgDotsCheck");
+
+  // Mode Toggle
   const darkModeToggle = document.getElementById("darkModeToggle");
 
   // Modal Elements
@@ -28,149 +36,249 @@ document.addEventListener("DOMContentLoaded", () => {
   const closeModalBtn = document.querySelector(".close-modal-btn");
 
   // State variables
-  let centerImage = null;
-  let centerImageLoaded = false;
-  let currentQRCode = null;
-  let finalDownloadName = "qrcode.png"; 
+  let centerImageDataUrl = null;
+  let finalDownloadName = "qrcode"; 
+  let qrCodeInstance = null;
 
-  // Initialize
+  // Initialize App
   initializeApp();
 
   function initializeApp() {
     const darkMode = localStorage.getItem('darkMode') === 'true';
     document.body.classList.toggle('dark-mode', darkMode);
-    darkModeToggle.checked = darkMode;
+    if (darkModeToggle) darkModeToggle.checked = darkMode;
+
+    qrCodeInstance = new QRCodeStyling(getQROptions("https://example.com", 300));
+    
+    if (previewCanvas) {
+      previewCanvas.innerHTML = "";
+      qrCodeInstance.append(previewCanvas);
+    }
+
+    if (qrCanvas) {
+      qrCanvas.innerHTML = "";
+      qrCodeInstance.append(qrCanvas);
+    }
 
     setupEventListeners();
     updatePreview();
   }
 
-  function setupEventListeners() {
-    // Input events for real-time preview
-    [urlInput, sizeInput, colorInput, bgColorInput, shapeSelect, frameSelect].forEach(el => {
-      el.addEventListener("input", updatePreview);
-    });
-
-    // Smart UX: ถ้าผู้ใช้คลิกเลือกเปลี่ยนสีกรอบ แต่เปิด "ไม่มีกรอบ" อยู่ ให้สลับเปิดกรอบอัติโนมัติ
-    frameColorInput.addEventListener("input", () => {
-      if (frameSelect.value === "none") {
-        frameSelect.value = "square"; 
-      }
-      updatePreview();
-    });
-
-    // Smart UX: เช่นเดียวกับการปรับความหนา ให้สลับเปิดกรอบอัติโนมัติทันที
-    frameThicknessInput.addEventListener("input", () => {
-      thicknessValue.textContent = frameThicknessInput.value + "%";
-      if (frameSelect.value === "none") {
-        frameSelect.value = "square";
-      }
-      updatePreview();
-    });
-
-    centerImageCheck.addEventListener("change", () => {
-      centerImageContainer.style.display = centerImageCheck.checked ? "block" : "none";
-      if (!centerImageCheck.checked) {
-        centerImage = null;
-        centerImageLoaded = false;
-        centerImageInput.value = '';
-      }
-      updatePreview();
-    });
-
-    centerImageInput.addEventListener("change", handleCenterImageUpload);
-
-    // Form submission
-    form.addEventListener("submit", (e) => {
-      e.preventDefault();
-      const url = urlInput.value.trim();
-      
-      if (!url) {
-        alert('กรุณาใส่ URL');
-        return;
-      }
-      
-      if (!url.startsWith("http")) {
-        alert('กรุณาใส่ URL ที่ถูกต้อง (ต้องเริ่มต้นด้วย http หรือ https)');
-        return;
-      }
-
-      filenameInput.value = "";
-      showModal();
-    });
-
-    // Modal Events
-    confirmModalBtn.addEventListener("click", handleModalConfirm);
-    cancelModalBtn.addEventListener("click", hideModal);
-    closeModalBtn.addEventListener("click", hideModal);
-    filenameModal.addEventListener("click", (e) => {
-      if (e.target === filenameModal) hideModal();
-    });
-    
-    filenameInput.addEventListener("keypress", (e) => {
-      if (e.key === "Enter") handleModalConfirm();
-    });
-
-    downloadBtn.addEventListener("click", downloadQRCode);
-    clearBtn.addEventListener("click", resetForm);
-    darkModeToggle.addEventListener("change", toggleDarkMode);
+  // Utility Debounce เพื่อประสิทธิภาพบนมือถือ
+  function debounce(func, delay = 150) {
+    let timer;
+    return (...args) => {
+      clearTimeout(timer);
+      timer = setTimeout(() => func.apply(this, args), delay);
+    };
   }
 
-  // --- Modal Logic ---
+  function getSelectedRadioValue(name, defaultValue) {
+    const selected = document.querySelector(`input[name="${name}"]:checked`);
+    return selected ? selected.value : defaultValue;
+  }
+
+  function getQROptions(text, size) {
+    const dotsColor = colorInput ? colorInput.value : "#0f172a";
+    const bgColor = bgColorInput ? bgColorInput.value : "#FFFFFF";
+    const frameColor = frameColorInput ? frameColorInput.value : "#2563eb";
+
+    const dotsType = getSelectedRadioValue("dotsShape", "square");
+    const cornerSquareType = getSelectedRadioValue("cornerSquareShape", "square");
+    const cornerDotType = getSelectedRadioValue("cornerDotShape", "square");
+    const marginSize = frameThicknessInput ? parseInt(frameThicknessInput.value) : 5;
+
+    const hasImage = centerImageCheck && centerImageCheck.checked && centerImageDataUrl;
+    const logoSize = logoSizeInput ? parseFloat(logoSizeInput.value) : 0.3;
+    const logoMargin = logoMarginInput ? parseInt(logoMarginInput.value) : 2;
+    const hideBgDots = hideBgDotsCheck ? hideBgDotsCheck.checked : true;
+
+    return {
+      width: size,
+      height: size,
+      type: "canvas",
+      data: text || "https://example.com",
+      margin: marginSize,
+      qrOptions: {
+        typeNumber: 0,
+        mode: "Byte",
+        errorCorrectionLevel: hasImage ? "H" : "Q"
+      },
+      image: hasImage ? centerImageDataUrl : undefined,
+      imageOptions: {
+        hideBackgroundDots: hideBgDots,
+        imageSize: logoSize,
+        margin: logoMargin,
+        crossOrigin: "anonymous"
+      },
+      dotsOptions: {
+        type: dotsType,
+        color: dotsColor
+      },
+      cornersSquareOptions: {
+        type: cornerSquareType,
+        color: frameColor
+      },
+      cornersDotOptions: {
+        type: cornerDotType,
+        color: frameColor
+      },
+      backgroundOptions: {
+        color: bgColor
+      }
+    };
+  }
+
+  function setupEventListeners() {
+    const debouncedUpdate = debounce(updatePreview, 150);
+
+    const textInputs = [urlInput, sizeInput];
+    textInputs.forEach(el => {
+      if (el) {
+        ["input", "keyup", "paste"].forEach(evt => {
+          el.addEventListener(evt, debouncedUpdate);
+        });
+      }
+    });
+
+    const instantInputs = [
+      colorInput, bgColorInput, frameColorInput,
+      frameThicknessInput, logoSizeInput, logoMarginInput, hideBgDotsCheck
+    ];
+    instantInputs.forEach(el => {
+      if (el) el.addEventListener("change", updatePreview);
+    });
+
+    const radioInputs = document.querySelectorAll('input[type="radio"]');
+    radioInputs.forEach(radio => {
+      radio.addEventListener('change', updatePreview);
+    });
+
+    if (frameThicknessInput && thicknessValue) {
+      frameThicknessInput.addEventListener("input", () => {
+        thicknessValue.textContent = frameThicknessInput.value + "px";
+      });
+    }
+
+    if (centerImageCheck) {
+      centerImageCheck.addEventListener("change", () => {
+        if (centerImageContainer) {
+          centerImageContainer.style.display = centerImageCheck.checked ? "block" : "none";
+        }
+        if (!centerImageCheck.checked) {
+          centerImageDataUrl = null;
+          if (centerImageInput) centerImageInput.value = '';
+        }
+        updatePreview();
+      });
+    }
+
+    if (centerImageInput) {
+      centerImageInput.addEventListener("change", handleCenterImageUpload);
+    }
+
+    if (form) {
+      form.addEventListener("submit", (e) => {
+        e.preventDefault();
+        const url = urlInput.value.trim();
+        
+        if (!url) {
+          alert('กรุณาใส่ URL');
+          return;
+        }
+        
+        if (!url.startsWith("http://") && !url.startsWith("https://")) {
+          alert('กรุณาใส่ URL ที่ถูกต้อง (ต้องเริ่มต้นด้วย http:// หรือ https://)');
+          return;
+        }
+
+        if (filenameInput) filenameInput.value = "";
+        showModal();
+      });
+    }
+
+    if (confirmModalBtn) confirmModalBtn.addEventListener("click", handleModalConfirm);
+    if (cancelModalBtn) cancelModalBtn.addEventListener("click", hideModal);
+    if (closeModalBtn) closeModalBtn.addEventListener("click", hideModal);
+    if (filenameModal) {
+      filenameModal.addEventListener("click", (e) => {
+        if (e.target === filenameModal) hideModal();
+      });
+    }
+    
+    if (filenameInput) {
+      filenameInput.addEventListener("keypress", (e) => {
+        if (e.key === "Enter") handleModalConfirm();
+      });
+    }
+
+    if (downloadBtn) {
+      downloadBtn.addEventListener("click", () => {
+        const url = urlInput.value.trim();
+        if (!url) {
+          alert('กรุณาใส่ URL ก่อนดาวน์โหลด');
+          return;
+        }
+        if (filenameInput) filenameInput.value = "";
+        showModal();
+      });
+    }
+
+    if (clearBtn) clearBtn.addEventListener("click", resetForm);
+    if (darkModeToggle) darkModeToggle.addEventListener("change", toggleDarkMode);
+  }
+
+  function updatePreview() {
+    const text = urlInput ? urlInput.value.trim() : "";
+    const size = sizeInput ? (parseInt(sizeInput.value) || 300) : 300;
+
+    // แสดงการ์ดผลลัพธ์พร้อมดาวน์โหลดเฉพาะเมื่อมีการพิมพ์/วางลิงก์แล้วเท่านั้น
+    if (qrResultContainer) {
+      if (text.length > 0) {
+        qrResultContainer.style.display = "block";
+      } else {
+        qrResultContainer.style.display = "none";
+      }
+    }
+
+    if (clearBtn) {
+      clearBtn.disabled = !text && !centerImageDataUrl;
+    }
+
+    const options = getQROptions(text || "https://example.com", size);
+    if (qrCodeInstance) {
+      qrCodeInstance.update(options);
+    }
+  }
+
   function showModal() {
-    filenameModal.classList.add("show");
-    setTimeout(() => filenameInput.focus(), 100);
+    if (filenameModal) {
+      filenameModal.classList.add("show");
+      setTimeout(() => filenameInput && filenameInput.focus(), 100);
+    }
   }
 
   function hideModal() {
-    filenameModal.classList.remove("show");
+    if (filenameModal) filenameModal.classList.remove("show");
   }
 
   function handleModalConfirm() {
-    const userInput = filenameInput.value.trim();
-    const url = urlInput.value.trim();
+    const userInput = filenameInput ? filenameInput.value.trim() : "";
+    const url = urlInput ? urlInput.value.trim() : "";
 
     if (userInput) {
-      finalDownloadName = userInput;
+      finalDownloadName = userInput.replace(/\.png$/i, '');
     } else {
       const cleanUrl = url
         .replace(/(^\w+:|^)\/\//, '') 
         .replace(/[^a-zA-Z0-9]/g, '_') 
         .substring(0, 50); 
       
-      finalDownloadName = `${cleanUrl}_swiftqr`;
-    }
-
-    if (!finalDownloadName.toLowerCase().endsWith('.png')) {
-      finalDownloadName += '.png';
+      finalDownloadName = `${cleanUrl || 'qrcode'}_swiftqr`;
     }
 
     hideModal();
-    generateQRCode(); 
-  }
-
-  // --- Generation Logic ---
-  function generateQRCode() {
-    const url = urlInput.value.trim();
-    const size = parseInt(sizeInput.value);
-    const color = colorInput.value;
-    const bgColor = bgColorInput.value;
-    const shape = shapeSelect.value;
-    const frameShape = frameSelect.value;
-    const frameColor = frameColorInput.value;
-    const frameThickness = parseInt(frameThicknessInput.value);
-
-    drawQR(qrCanvas, url, size, color, bgColor, shape, frameShape, frameColor, frameThickness, centerImage);
-    
-    qrResultContainer.style.display = "block";
-    qrResultContainer.classList.add('fade-in');
-    clearBtn.disabled = false;
-
-    currentQRCode = qrCanvas.toDataURL("image/png");
-    
-    if (window.innerWidth < 992) {
-      qrResultContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
+    downloadQRCode(); 
   }
 
   function handleCenterImageUpload(e) {
@@ -179,163 +287,41 @@ document.addEventListener("DOMContentLoaded", () => {
     
     if (file.size > 2 * 1024 * 1024) {
       alert('ไฟล์ภาพใหญ่เกินไป กรุณาเลือกไฟล์ที่มีขนาดน้อยกว่า 2MB');
-      centerImageInput.value = '';
+      if (centerImageInput) centerImageInput.value = '';
       return;
     }
 
     const reader = new FileReader();
     reader.onload = ev => {
-      const img = new Image();
-      img.onload = () => {
-        centerImage = img;
-        centerImageLoaded = true;
-        updatePreview();
-      };
-      img.onerror = () => {
-        alert('ไม่สามารถโหลดภาพได้ กรุณาลองอีกครั้ง');
-        centerImageInput.value = '';
-      };
-      img.src = ev.target.result;
+      centerImageDataUrl = ev.target.result;
+      updatePreview();
     };
     reader.readAsDataURL(file);
   }
 
-  function updatePreview() {
-    const text = urlInput.value.trim() || "https://example.com";
-    const size = parseInt(sizeInput.value) || 300;
-    const color = colorInput.value;
-    const bgColor = bgColorInput.value;
-    const shape = shapeSelect.value;
-    const frameShape = frameSelect.value;
-    const frameColor = frameColorInput.value;
-    const frameThickness = parseInt(frameThicknessInput.value);
-
-    drawQR(previewCanvas, text, size, color, bgColor, shape, frameShape, frameColor, frameThickness, centerImage);
-  }
-
-  function drawQR(canvas, text, size, color, bgColor, shape, frameShape, frameColor, frameThickness, centerImg = null) {
-    const qr = qrcode(0, "H");
-    qr.addData(text);
-    qr.make();
-
-    const ctx = canvas.getContext("2d");
-    
-    // [FIXED BUG] ปรับให้เป็น 0 ทันทีหากเลือก "none" เพื่อไม่ให้เหลือพื้นที่ว่างสีขาวรอบตัว QR ตอนไม่ต้องการกรอบ
-    const borderThickness = (frameShape !== "none") ? (size * frameThickness) / 100 : 0;
-    const totalSize = size + borderThickness * 2;
-
-    canvas.width = totalSize;
-    canvas.height = totalSize;
-
-    ctx.clearRect(0, 0, totalSize, totalSize);
-    ctx.fillStyle = bgColor;
-    ctx.fillRect(0, 0, totalSize, totalSize);
-
-    ctx.save();
-    if (frameShape === "rounded") {
-      const radius = 30;
-      ctx.beginPath();
-      roundedRect(ctx, borderThickness, borderThickness, size, size, radius);
-      ctx.clip();
-    } else if (frameShape === "square") {
-      ctx.beginPath();
-      ctx.rect(borderThickness, borderThickness, size, size);
-      ctx.clip();
-    }
-
-    const cellSize = Math.floor(size / qr.getModuleCount());
-    const qrSize = qr.getModuleCount() * cellSize;
-    const offset = borderThickness + (size - qrSize) / 2;
-
-    for (let row = 0; row < qr.getModuleCount(); row++) {
-      for (let col = 0; col < qr.getModuleCount(); col++) {
-        if (qr.isDark(row, col)) {
-          ctx.fillStyle = color;
-          const x = offset + col * cellSize;
-          const y = offset + row * cellSize;
-
-          if (shape === "circle") {
-            ctx.beginPath();
-            ctx.arc(x + cellSize / 2, y + cellSize / 2, cellSize / 2.3, 0, Math.PI * 2);
-            ctx.fill();
-          } else if (shape === "dot") {
-            ctx.beginPath();
-            ctx.arc(x + cellSize / 2, y + cellSize / 2, cellSize / 3, 0, Math.PI * 2);
-            ctx.fill();
-          } else {
-            ctx.fillRect(x, y, cellSize, cellSize);
-          }
-        }
-      }
-    }
-
-    ctx.restore();
-
-    // ส่วนการวาดสีกรอบลงพื้นผิว Canvas
-    if (frameShape !== "none") {
-      ctx.strokeStyle = frameColor;
-      ctx.lineWidth = borderThickness;
-      if (frameShape === "rounded") {
-        const radius = 30;
-        ctx.beginPath();
-        roundedRect(ctx, borderThickness / 2, borderThickness / 2, size + borderThickness, size + borderThickness, radius);
-        ctx.stroke();
-      } else if (frameShape === "square") {
-        ctx.strokeRect(borderThickness / 2, borderThickness / 2, size + borderThickness, size + borderThickness);
-      }
-    }
-
-    if (centerImg && centerImageLoaded) {
-      const imgSize = size * 0.25;
-      const x = totalSize / 2 - imgSize / 2;
-      const y = totalSize / 2 - imgSize / 2;
-      
-      ctx.fillStyle = bgColor;
-      ctx.fillRect(x - 5, y - 5, imgSize + 10, imgSize + 10);
-      
-      ctx.drawImage(centerImg, x, y, imgSize, imgSize);
-    }
-  }
-
-  function roundedRect(ctx, x, y, w, h, r) {
-    ctx.beginPath();
-    ctx.moveTo(x + r, y);
-    ctx.lineTo(x + w - r, y);
-    ctx.quadraticCurveTo(x + w, y, x + w, y + r);
-    ctx.lineTo(x + w, y + h - r);
-    ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
-    ctx.lineTo(x + r, y + h);
-    ctx.quadraticCurveTo(x, y + h, x, y + h - r);
-    ctx.lineTo(x, y + r);
-    ctx.quadraticCurveTo(x, y, x + r, y);
-    ctx.closePath();
-  }
-
   function downloadQRCode() {
-    if (!currentQRCode) {
-      alert('ไม่มี QR Code ที่จะดาวน์โหลด');
+    if (!qrCodeInstance) {
+      alert('ไม่พบ QR Code ที่จะดาวน์โหลด');
       return;
     }
-    const link = document.createElement("a");
-    link.href = currentQRCode;
-    link.download = finalDownloadName; 
-    link.click();
+
+    qrCodeInstance.download({
+      name: finalDownloadName,
+      extension: "png"
+    });
   }
 
   function resetForm() {
-    form.reset();
-    centerImage = null;
-    centerImageLoaded = false;
-    centerImageContainer.style.display = "none";
-    qrResultContainer.style.display = "none";
-    qrResultContainer.classList.remove('fade-in');
-    clearBtn.disabled = true;
-    thicknessValue.textContent = "5%";
+    if (form) form.reset();
+    centerImageDataUrl = null;
+    if (centerImageContainer) centerImageContainer.style.display = "none";
+    if (thicknessValue) thicknessValue.textContent = "5px";
     
-    colorInput.value = "#0f172a";
-    bgColorInput.value = "#FFFFFF";
-    frameColorInput.value = "#2563eb";
+    if (colorInput) colorInput.value = "#0f172a";
+    if (bgColorInput) bgColorInput.value = "#ffffff";
+    if (frameColorInput) frameColorInput.value = "#2563eb";
     
+    if (clearBtn) clearBtn.disabled = true;
     updatePreview();
   }
 
@@ -345,3 +331,12 @@ document.addEventListener("DOMContentLoaded", () => {
     localStorage.setItem('darkMode', isDarkMode);
   }
 });
+
+// ลงทะเบียน Service Worker เพื่อรองรับการใช้งานแบบ ออฟไลน์ (Offline Mode)
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./sw.js')
+      .then(() => console.log('Swift QR: Offline Service Worker Registered!'))
+      .catch((err) => console.error('Service Worker Registration Failed:', err));
+  });
+}

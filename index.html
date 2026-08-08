@@ -3,12 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Swift QR</title>
-  <meta name="description" content="Swift QR" />
+  <title>Swift QR - สร้าง QR Code สไตล์มินิมอลและปรับแต่งได้สูงสุดแบบเรียลไทม์</title>
+  <meta name="description" content="สร้าง QR Code สไตล์มินิมอล แสดงผลเรียลไทม์ ใส่โลโก้ตรงกลาง ปรับแต่งขอบและสีได้ฟรี ไม่ซ้ำใคร" />
   <meta name="author" content="Charifkub,Shoper Gamer,Animexo" />
   <meta name="robots" content="index, follow" /> 
   <link href="css/bootstrap.min.css" rel="stylesheet">
-  <link href="css/all.min.css"       rel="stylesheet">
   <link href="css/style.css"         rel="stylesheet">
   <link rel="icon" href="SwiftQR.webp" type="image/webp">
 </head>
@@ -21,7 +20,8 @@
           <header class="app-header">
             <div class="header-brand">
               <div class="brand-icon">
-                <i class="fas fa-qrcode" aria-hidden="true"></i>
+                <!-- SVG fa-qrcode -->
+                <svg class="svg-icon" viewBox="0 0 448 512" aria-hidden="true"><path d="M0 224h192V0H0v224zm64-160h64v64H64V64zm-64 448h192V288H0v224zm64-160h64v64H64v-64zm192-352v224h192V0H256zm128 128h-64V64h64v64zm128 160h-64v64h64v-64zm-128 0h-64v64h64v-64zm0 128h-64v64h64v-64zm128 0h-64v64h64v-64z"/></svg>
               </div>
               <div>
                 <h1 class="app-title">Swift QR</h1>
@@ -32,7 +32,8 @@
             <div class="theme-switch-wrapper" title="เปลี่ยนโหมดสี">
               <input type="checkbox" class="form-check-input" id="darkModeToggle" role="switch">
               <label for="darkModeToggle" class="theme-label">
-                <i class="fas fa-moon" aria-hidden="true"></i>
+                <!-- SVG fa-moon -->
+                <svg class="svg-icon" viewBox="0 0 512 512" aria-hidden="true"><path d="M223.5 32C100 32 0 132.3 0 256s100 224 223.5 224c60.6 0 115.5-24.2 155.8-63.4 5-4.9 6.3-12.5 3.1-18.7s-10.1-9.7-17-8.5c-9.8 1.7-19.8 2.6-30.1 2.6-96.9 0-175.5-78.8-175.5-176 0-65.8 51.6-121 121.5-135.5 6.8-1.4 12.3-6.2 14.1-13 1.8-6.8-.3-14.1-5.5-18.7C334.6 44.1 280.8 32 223.5 32z"/></svg>
               </label>
             </div>
           </header>
@@ -45,7 +46,12 @@
 
                   <div class="form-group-custom mb-4">
                     <label for="urlInput" class="custom-label">
-                      <i class="fas fa-link me-2"></i>ลิงก์ปลายทาง (URL)
+                      <!-- SVG Link Icon -->
+                      <svg class="svg-icon me-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+                        <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+                      </svg>
+                      ลิงก์ปลายทาง (URL)
                     </label>
                     <input type="url" class="form-control custom-input"
                            id="urlInput" placeholder="https://example.com"
@@ -81,30 +87,77 @@
 
                   <h2 class="sub-section-title">รูปแบบดีไซน์</h2>
                   
-                  <div class="row g-3 mb-4">
-                    <div class="col-6">
-                      <label for="shapeSelect" class="custom-label">ลักษณะจุดลาย</label>
-                      <select class="form-select custom-select" id="shapeSelect">
-                        <option value="square">สี่เหลี่ยมคลาสสิก</option>
-                        <option value="circle">โมเดิร์นวงกลม</option>
-                        <option value="dot">จุดไข่ปลา</option>
-                      </select>
-                    </div>
-                    <div class="col-6">
-                      <label for="frameSelect" class="custom-label">สไตล์กรอบภายนอก</label>
-                      <select class="form-select custom-select" id="frameSelect">
-                        <option value="none">ไม่มีกรอบ</option>
-                        <option value="square">กรอบสี่เหลี่ยม</option>
-                        <option value="rounded">กรอบมุมมน</option>
-                      </select>
-                    </div>
-                    <div class="col-12">
-                      <label for="frameThicknessInput" class="custom-label d-flex justify-content-between">
-                        <span>ความหนาของเส้นกรอบ</span>
-                        <span id="thicknessValue" class="badge-thickness">5%</span>
+                  <!-- สไตล์รูปทรง -->
+                  <div class="mb-3">
+                    <label class="custom-label">สไตล์รูปทรง</label>
+                    <div class="icon-selector-grid">
+                      <label class="icon-option">
+                        <input type="radio" name="dotsShape" value="square" checked>
+                        <span class="icon-box">■</span>
                       </label>
-                      <input type="range" class="form-range custom-range" id="frameThicknessInput" min="2" max="10" value="5" step="1">
+                      <label class="icon-option">
+                        <input type="radio" name="dotsShape" value="dots">
+                        <span class="icon-box">●</span>
+                      </label>
+                      <label class="icon-option">
+                        <input type="radio" name="dotsShape" value="rounded">
+                        <span class="icon-box">▢</span>
+                      </label>
+                      <label class="icon-option">
+                        <input type="radio" name="dotsShape" value="extra-rounded">
+                        <span class="icon-box">⬎</span>
+                      </label>
+                      <label class="icon-option">
+                        <input type="radio" name="dotsShape" value="classy">
+                        <span class="icon-box">✦</span>
+                      </label>
+                      <label class="icon-option">
+                        <input type="radio" name="dotsShape" value="classy-rounded">
+                        <span class="icon-box">✧</span>
+                      </label>
                     </div>
+                  </div>
+
+                  <!-- สไตล์เส้นขอบ -->
+                  <div class="mb-3">
+                    <label class="custom-label">สไตล์เส้นขอบ</label>
+                    <div class="icon-selector-grid">
+                      <label class="icon-option">
+                        <input type="radio" name="cornerSquareShape" value="square" checked>
+                        <span class="icon-box">■</span>
+                      </label>
+                      <label class="icon-option">
+                        <input type="radio" name="cornerSquareShape" value="dot">
+                        <span class="icon-box">●</span>
+                      </label>
+                      <label class="icon-option">
+                        <input type="radio" name="cornerSquareShape" value="extra-rounded">
+                        <span class="icon-box">▢</span>
+                      </label>
+                    </div>
+                  </div>
+
+                  <!-- สไตล์เซ็นเตอร์ -->
+                  <div class="mb-3">
+                    <label class="custom-label">สไตล์เซ็นเตอร์</label>
+                    <div class="icon-selector-grid">
+                      <label class="icon-option">
+                        <input type="radio" name="cornerDotShape" value="square" checked>
+                        <span class="icon-box">■</span>
+                      </label>
+                      <label class="icon-option">
+                        <input type="radio" name="cornerDotShape" value="dot">
+                        <span class="icon-box">●</span>
+                      </label>
+                    </div>
+                  </div>
+
+                  <div class="mb-4">
+                    <label for="frameThicknessInput" class="custom-label d-flex justify-content-between">
+                      <span>ระยะขอบรอบทิศทาง (Margin)</span>
+                      <span id="thicknessValue" class="badge-thickness">5px</span>
+                    </label>
+                    <input type="range" class="form-range custom-range" id="frameThicknessInput" min="0" max="30" value="5" step="1">
                   </div>
 
                   <h2 class="sub-section-title">โลโก้ตรงกลาง</h2>
@@ -112,7 +165,7 @@
                   <div class="toggle-container mb-3">
                     <label class="toggle-card" for="centerImageCheck">
                       <div class="d-flex align-items-center gap-3">
-                        <i class="fas fa-image text-muted fs-5"></i>
+                        <svg class="svg-icon text-muted fs-5" viewBox="0 0 512 512" aria-hidden="true"><path d="M0 96C0 60.7 28.7 32 64 32H448c35.3 0 64 28.7 64 64V416c0 35.3-28.7 64-64 64H64c-35.3 0-64-28.7-64-64V96zM323.8 202.5c-4.5-6.6-11.9-10.5-19.8-10.5s-15.3 3.9-19.8 10.5l-87 127.6L170.7 297c-4.6-5.7-11.5-9-18.7-9s-14.2 3.3-18.7 9l-64 80c-5.8 7.2-6.9 17.1-2.9 25.4s12.4 13.6 21.6 13.6H424c8.9 0 17.1-4.9 21.2-12.8s3.6-17.4-1.4-24.7l-120-176zM112 192a48 48 0 1 0 0-96 48 48 0 1 0 0 96z"/></svg>
                         <div>
                           <span class="toggle-title">ใส่รูปภาพ/โลโก้ตรงกลาง</span>
                           <p class="toggle-desc mb-0">ระบบจะเว้นพื้นที่ตรงกลางและวางรูปภาพของคุณลงไป</p>
@@ -123,20 +176,49 @@
                   </div>
 
                   <div class="mb-4 upload-zone" id="centerImageContainer" style="display:none;">
-                    <label for="centerImageInput" class="upload-box">
-                      <i class="fas fa-cloud-upload-alt upload-icon"></i>
+                    <label for="centerImageInput" class="upload-box mb-3">
+                      <svg class="svg-icon upload-icon" viewBox="0 0 640 512" aria-hidden="true"><path d="M144 480C64.5 480 0 415.5 0 336c0-62.8 40.2-116.2 96.2-135.9c-.1-2.7-.2-5.4-.2-8.1c0-88.4 71.6-160 160-160c59.3 0 111 32.2 138.7 80.2C409.9 102 428.3 96 448 96c70.7 0 128 57.3 128 128c0 13.5-2.7 26.3-7.6 38C611.3 278.9 640 324.1 640 376c0 61.9-50.1 112-112 112H144zm183-281c-9.4-9.4-24.6-9.4-33.9 0l-80 80c-9.4 9.4-9.4 24.6 0 33.9s24.6 9.4 33.9 0l39-39V392c0 13.3 11.7 24 25 24s25-10.7 25-24V273.9l39 39c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-80-80z"/></svg>
                       <span>คลิกเพื่อเลือกรูปภาพโลโก้</span>
                       <p class="upload-limit">รองรับ PNG, JPG, SVG, WebP (ขนาดไฟล์ไม่เกิน 2MB)</p>
                     </label>
                     <input type="file" id="centerImageInput" accept="image/*" class="d-none">
+
+                    <div class="row g-3">
+                      <div class="col-6">
+                        <label for="logoSizeInput" class="custom-label">ขนาดโลโก้</label>
+                        <select class="form-select custom-select" id="logoSizeInput">
+                          <option value="0.2">🔍 เล็ก (20%)</option>
+                          <option value="0.3" selected>🎯 ปานกลาง (30%)</option>
+                          <option value="0.35">📐 ใหญ่ (35%)</option>
+                          <option value="0.4">🖼️ ใหญ่พิเศษ (40%)</option>
+                        </select>
+                      </div>
+                      <div class="col-6">
+                        <label for="logoMarginInput" class="custom-label">ระยะห่างรอบโลโก้</label>
+                        <select class="form-select custom-select" id="logoMarginInput">
+                          <option value="0">⚪ ไม่มี (0px)</option>
+                          <option value="2" selected>🔘 น้อย (2px)</option>
+                          <option value="5">🔘 ปานกลาง (5px)</option>
+                          <option value="10">🔘 มาก (10px)</option>
+                        </select>
+                      </div>
+                      <div class="col-12">
+                        <div class="form-check form-switch mt-1">
+                          <input class="form-check-input" type="checkbox" id="hideBgDotsCheck" checked>
+                          <label class="form-check-label custom-label text-muted" for="hideBgDotsCheck">
+                            ซ่อนจุด QR Code หลังโลโก้ (แนะนำเพื่อการสแกนที่สมบูรณ์)
+                          </label>
+                        </div>
+                      </div>
+                    </div>
                   </div>
 
                   <div class="action-grid mt-4">
                     <button type="submit" class="btn-generate">
-                      <i class="fas fa-bolt me-2"></i>สร้าง QR Code ทันที
+                      <svg class="svg-icon me-2" viewBox="0 0 384 512" aria-hidden="true"><path d="M0 256L224 0l-32 192h192L160 512l32-192H0z"/></svg>ดาวน์โหลดภาพไฟล์ความละเอียดสูง
                     </button>
                     <button type="button" class="btn-clear" id="clearBtn" disabled title="ล้างข้อมูล">
-                      <i class="fas fa-trash-alt"></i>
+                      <svg class="svg-icon" viewBox="0 0 448 512" aria-hidden="true"><path d="M135.2 17.7C140.6 6.8 151.7 0 163.8 0h120.4c12.1 0 23.2 6.8 28.6 17.7L320 32h96c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 96 0 81.7 0 64s14.3-32 32-32h96l7.2-14.3zM32 128h384v320c0 35.3-28.7 64-64 64H96c-35.3 0-64-28.7-64-64V128zm96 64c-8.8 0-16 7.2-16 16v224c0 8.8 7.2 16 16 16s16-7.2 16-16V208c0-8.8-7.2-16-16-16zm96 0c-8.8 0-16 7.2-16 16v224c0 8.8 7.2 16 16 16s16-7.2 16-16V208c0-8.8-7.2-16-16-16zm96 0c-8.8 0-16 7.2-16 16v224c0 8.8 7.2 16 16 16s16-7.2 16-16V208c0-8.8-7.2-16-16-16z"/></svg>
                     </button>
                   </div>
                 </form>
@@ -146,21 +228,19 @@
                 <div class="sticky-sidebar">
                   
                   <div class="preview-card">
-                    <span class="preview-badge"><span class="dot-blink"></span>ตัวอย่างสด</span>
+                    <span class="preview-badge"><span class="dot-blink"></span>ตัวอย่างสด (Real-Time)</span>
                     <div class="canvas-holder">
-                      <canvas id="previewCanvas"></canvas>
+                      <div id="previewCanvas"></div>
                     </div>
                   </div>
 
+                  <!-- ปรับให้อยู่ในสถานะซ่อนอยู่เป็นค่าเริ่มต้น (style="display:none;") -->
                   <div id="qrResultContainer" class="result-card" style="display:none;">
                     <div class="success-banner">
-                      <i class="fas fa-check-circle me-2"></i> ถอดรหัสเสร็จสมบูรณ์!
-                    </div>
-                    <div class="canvas-holder final-holder mb-3">
-                      <canvas id="qrCanvas"></canvas>
+                      <svg class="svg-icon me-2" viewBox="0 0 512 512" aria-hidden="true"><path d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM369 209L241 337c-9.4 9.4-24.6 9.4-33.9 0l-64-64c-9.4-9.4-9.4-24.6 0-33.9s24.6-9.4 33.9 0l47 47L335 175c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9z"/></svg>พร้อมดาวน์โหลดภาพความละเอียดสูง
                     </div>
                     <button class="btn-download" id="downloadBtn">
-                      <i class="fas fa-download me-2"></i> ดาวน์โหลดภาพไฟล์ความละเอียดสูง
+                      <svg class="svg-icon me-2" viewBox="0 0 512 512" aria-hidden="true"><path d="M288 32c0-17.7-14.3-32-32-32s-32 14.3-32 32V274.7l-73.4-73.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l128 128c12.5 12.5 32.8 12.5 45.3 0l128-128c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L288 274.7V32zM64 352c-17.7 0-32 14.3-32 32v64c0 17.7 14.3 32 32 32H448c17.7 0 32-14.3 32-32V384c0-17.7-14.3-32-32-32H64z"/></svg>บันทึกไฟล์ภาพ
                     </button>
                   </div>
 
@@ -168,14 +248,18 @@
               </div>
 
             </div>
-          </div> </div> </div>
+          </div>
+        </div>
+      </div>
     </div>
   </main>
 
   <div id="filenameModal" class="custom-modal" role="dialog" aria-modal="true">
     <div class="modal-box">
       <div class="modal-header-custom">
-        <h3 class="modal-title-custom"><i class="fas fa-file-signature me-2"></i>บันทึกไฟล์ภาพ</h3>
+        <h3 class="modal-title-custom">
+          <svg class="svg-icon me-2" viewBox="0 0 576 512" aria-hidden="true"><path d="M0 64C0 28.7 28.7 0 64 0H224V128c0 17.7 14.3 32 32 32H384V288H216c-13.3 0-24 10.7-24 24s10.7 24 24 24H384V448c0 35.3-28.7 64-64 64H64c-35.3 0-64-28.7-64-64V64zM384 336c0-8.8-7.2-16-16-16H216c-8.8 0-16 7.2-16 16s7.2 16 16 16H368c8.8 0 16-7.2 16-16zm0 64c0-8.8-7.2-16-16-16H216c-8.8 0-16 7.2-16 16s7.2 16 16 16H368c8.8 0 16-7.2 16-16zm128-224a32 32 0 0 0 -32-32V0L576 128H480z"/></svg>บันทึกไฟล์ภาพ
+        </h3>
         <button class="close-modal-btn" aria-label="ปิด">&times;</button>
       </div>
       <div class="modal-body-custom">
@@ -195,7 +279,7 @@
   </footer>
 
   <script>document.getElementById('fyear').textContent = new Date().getFullYear();</script>
-  <script src="js/qrcode.min.js"></script>
+  <script src="js/qr-code-styling.js"></script>
   <script src="js/index.js"></script>
 </body>
 </html>
