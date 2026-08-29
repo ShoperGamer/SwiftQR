@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Swift QR - สร้าง QR Code สไตล์มินิมอลและปรับแต่งได้สูงสุดแบบเรียลไทม์</title>
+  <title>Swift QR</title>
   <meta name="description" content="สร้าง QR Code สไตล์มินิมอล แสดงผลเรียลไทม์ ใส่โลโก้ตรงกลาง ปรับแต่งขอบและสีได้ฟรี ไม่ซ้ำใคร" />
   <meta name="author" content="Charifkub,Shoper Gamer,Animexo" />
   <meta name="robots" content="index, follow" /> 
@@ -20,7 +20,6 @@
           <header class="app-header">
             <div class="header-brand">
               <div class="brand-icon">
-                <!-- SVG fa-qrcode -->
                 <svg class="svg-icon" viewBox="0 0 448 512" aria-hidden="true"><path d="M0 224h192V0H0v224zm64-160h64v64H64V64zm-64 448h192V288H0v224zm64-160h64v64H64v-64zm192-352v224h192V0H256zm128 128h-64V64h64v64zm128 160h-64v64h64v-64zm-128 0h-64v64h64v-64zm0 128h-64v64h64v-64zm128 0h-64v64h64v-64z"/></svg>
               </div>
               <div>
@@ -32,7 +31,6 @@
             <div class="theme-switch-wrapper" title="เปลี่ยนโหมดสี">
               <input type="checkbox" class="form-check-input" id="darkModeToggle" role="switch">
               <label for="darkModeToggle" class="theme-label">
-                <!-- SVG fa-moon -->
                 <svg class="svg-icon" viewBox="0 0 512 512" aria-hidden="true"><path d="M223.5 32C100 32 0 132.3 0 256s100 224 223.5 224c60.6 0 115.5-24.2 155.8-63.4 5-4.9 6.3-12.5 3.1-18.7s-10.1-9.7-17-8.5c-9.8 1.7-19.8 2.6-30.1 2.6-96.9 0-175.5-78.8-175.5-176 0-65.8 51.6-121 121.5-135.5 6.8-1.4 12.3-6.2 14.1-13 1.8-6.8-.3-14.1-5.5-18.7C334.6 44.1 280.8 32 223.5 32z"/></svg>
               </label>
             </div>
@@ -42,21 +40,86 @@
             <div class="row g-4">
               
               <div class="col-12 col-lg-7 form-panel">
+                <!-- แท็บเลือกประเภทข้อมูล QR Code -->
+                <div class="qr-type-tabs mb-4">
+                  <button type="button" class="qr-tab-btn active" data-type="url">
+                    <svg class="svg-icon me-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
+                    URL
+                  </button>
+                  <button type="button" class="qr-tab-btn" data-type="text">
+                    <svg class="svg-icon me-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 7 4 4 20 4 20 7"></polyline><line x1="9" y1="20" x2="15" y2="20"></line><line x1="12" y1="4" x2="12" y2="20"></line></svg>
+                    ข้อความ (Text)
+                  </button>
+                  <button type="button" class="qr-tab-btn" data-type="promptpay">
+                    <svg class="svg-icon me-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"></rect><line x1="12" y1="8" x2="12" y2="16"></line><line x1="8" y1="12" x2="16" y2="12"></line></svg>
+                    PromptPay
+                  </button>
+                  <button type="button" class="qr-tab-btn" data-type="wifi">
+                    <svg class="svg-icon me-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.55a11 11 0 0 1 14.08 0"></path><path d="M1.42 9a16 16 0 0 1 21.16 0"></path><path d="M8.53 16.11a6 6 0 0 1 6.95 0"></path><line x1="12" y1="20" x2="12.01" y2="20"></line></svg>
+                    WiFi
+                  </button>
+                </div>
+
                 <form id="qrForm" novalidate>
 
-                  <div class="form-group-custom mb-4">
-                    <label for="urlInput" class="custom-label">
-                      <!-- SVG Link Icon -->
-                      <svg class="svg-icon me-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                        <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
-                        <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
-                      </svg>
-                      ลิงก์ปลายทาง (URL)
-                    </label>
-                    <input type="url" class="form-control custom-input"
-                           id="urlInput" placeholder="https://example.com"
-                           autocomplete="url" required>
+                  <!-- 1. ช่องกรอก URL -->
+                  <div class="qr-input-group mb-4" id="groupUrl">
+                    <label for="urlInput" class="custom-label">ลิงก์ปลายทาง (URL)</label>
+                    <input type="url" class="form-control custom-input" id="urlInput" placeholder="https://example.com" autocomplete="url">
                     <span class="input-hint">ระบุลิงก์ที่เริ่มต้นด้วย http:// หรือ https://</span>
+                  </div>
+
+                  <!-- 2. ช่องกรอกข้อความ (Text) -->
+                  <div class="qr-input-group mb-4" id="groupText" style="display:none;">
+                    <label for="textInput" class="custom-label">ข้อความหรือรายละเอียด</label>
+                    <textarea class="form-control custom-input" id="textInput" rows="3" placeholder="พิมพ์ข้อความที่ต้องการ..."></textarea>
+                    <span class="input-hint">รองรับตัวอักษรภาษาไทย อังกฤษ ตัวเลข และสัญลักษณ์</span>
+                  </div>
+
+                  <!-- 3. ช่องกรอก PromptPay -->
+                  <div class="qr-input-group mb-4" id="groupPromptpay" style="display:none;">
+                    <div class="row g-3">
+                      <div class="col-12 col-md-7">
+                        <label for="ppTargetInput" class="custom-label">เบอร์โทรศัพท์ หรือ เลขบัตรประชาชน</label>
+                        <input type="text" class="form-control custom-input" id="ppTargetInput" placeholder="เช่น 0812345678 หรือ 1100400xxxxxx" maxlength="13">
+                        <span class="input-hint">เบอร์มือถือ (10 หลัก) หรือ เลขบัตรประชาชน (13 หลัก)</span>
+                      </div>
+                      <div class="col-12 col-md-5">
+                        <label for="ppAmountInput" class="custom-label">จำนวนเงิน (บาท) — ไม่บังคับ</label>
+                        <input type="number" step="0.01" min="0" class="form-control custom-input" id="ppAmountInput" placeholder="0.00">
+                        <span class="input-hint">เว้นว่างไว้หากให้ผู้สแกนระบุเอง</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- 4. ช่องกรอก WiFi -->
+                  <div class="qr-input-group mb-4" id="groupWifi" style="display:none;">
+                    <div class="row g-3">
+                      <div class="col-12 col-md-6">
+                        <label for="wifiSsidInput" class="custom-label">ชื่อเครือข่าย WiFi (SSID)</label>
+                        <input type="text" class="form-control custom-input" id="wifiSsidInput" placeholder="เช่น Home_WiFi_2.4G">
+                      </div>
+                      <div class="col-12 col-md-6">
+                        <label for="wifiPassInput" class="custom-label">รหัสผ่าน WiFi</label>
+                        <input type="text" class="form-control custom-input" id="wifiPassInput" placeholder="รหัสผ่านเชื่อมต่อ">
+                      </div>
+                      <div class="col-12 col-md-6">
+                        <label for="wifiTypeInput" class="custom-label">ประเภทความปลอดภัย (Encryption)</label>
+                        <select class="form-select custom-select" id="wifiTypeInput">
+                          <option value="WPA" selected>WPA/WPA2/WPA3 (มาตรฐานทั่วไป)</option>
+                          <option value="WEP">WEP (แบบเก่า)</option>
+                          <option value="nopass">ไม่มีรหัสผ่าน (Open)</option>
+                        </select>
+                      </div>
+                      <div class="col-12 col-md-6 d-flex align-items-end">
+                        <div class="form-check form-switch mb-2">
+                          <input class="form-check-input" type="checkbox" id="wifiHiddenCheck">
+                           <label class="form-check-label custom-label mb-0" for="wifiHiddenCheck">
+                              เครือข่ายซ่อนชื่อ (Hidden SSID)
+                            </label>
+                        </div>
+                      </div>
+                    </div>
                   </div>
 
                   <h2 class="sub-section-title">ขนาดและโทนสี</h2>
@@ -87,68 +150,32 @@
 
                   <h2 class="sub-section-title">รูปแบบดีไซน์</h2>
                   
-                  <!-- สไตล์รูปทรง -->
                   <div class="mb-3">
                     <label class="custom-label">สไตล์รูปทรง</label>
                     <div class="icon-selector-grid">
-                      <label class="icon-option">
-                        <input type="radio" name="dotsShape" value="square" checked>
-                        <span class="icon-box">■</span>
-                      </label>
-                      <label class="icon-option">
-                        <input type="radio" name="dotsShape" value="dots">
-                        <span class="icon-box">●</span>
-                      </label>
-                      <label class="icon-option">
-                        <input type="radio" name="dotsShape" value="rounded">
-                        <span class="icon-box">▢</span>
-                      </label>
-                      <label class="icon-option">
-                        <input type="radio" name="dotsShape" value="extra-rounded">
-                        <span class="icon-box">⬎</span>
-                      </label>
-                      <label class="icon-option">
-                        <input type="radio" name="dotsShape" value="classy">
-                        <span class="icon-box">✦</span>
-                      </label>
-                      <label class="icon-option">
-                        <input type="radio" name="dotsShape" value="classy-rounded">
-                        <span class="icon-box">✧</span>
-                      </label>
+                      <label class="icon-option"><input type="radio" name="dotsShape" value="square" checked><span class="icon-box">■</span></label>
+                      <label class="icon-option"><input type="radio" name="dotsShape" value="dots"><span class="icon-box">●</span></label>
+                      <label class="icon-option"><input type="radio" name="dotsShape" value="rounded"><span class="icon-box">▢</span></label>
+                      <label class="icon-option"><input type="radio" name="dotsShape" value="extra-rounded"><span class="icon-box">⬎</span></label>
+                      <label class="icon-option"><input type="radio" name="dotsShape" value="classy"><span class="icon-box">✦</span></label>
+                      <label class="icon-option"><input type="radio" name="dotsShape" value="classy-rounded"><span class="icon-box">✧</span></label>
                     </div>
                   </div>
 
-                  <!-- สไตล์เส้นขอบ -->
                   <div class="mb-3">
                     <label class="custom-label">สไตล์เส้นขอบ</label>
                     <div class="icon-selector-grid">
-                      <label class="icon-option">
-                        <input type="radio" name="cornerSquareShape" value="square" checked>
-                        <span class="icon-box">■</span>
-                      </label>
-                      <label class="icon-option">
-                        <input type="radio" name="cornerSquareShape" value="dot">
-                        <span class="icon-box">●</span>
-                      </label>
-                      <label class="icon-option">
-                        <input type="radio" name="cornerSquareShape" value="extra-rounded">
-                        <span class="icon-box">▢</span>
-                      </label>
+                      <label class="icon-option"><input type="radio" name="cornerSquareShape" value="square" checked><span class="icon-box">■</span></label>
+                      <label class="icon-option"><input type="radio" name="cornerSquareShape" value="dot"><span class="icon-box">●</span></label>
+                      <label class="icon-option"><input type="radio" name="cornerSquareShape" value="extra-rounded"><span class="icon-box">▢</span></label>
                     </div>
                   </div>
 
-                  <!-- สไตล์เซ็นเตอร์ -->
                   <div class="mb-3">
                     <label class="custom-label">สไตล์เซ็นเตอร์</label>
                     <div class="icon-selector-grid">
-                      <label class="icon-option">
-                        <input type="radio" name="cornerDotShape" value="square" checked>
-                        <span class="icon-box">■</span>
-                      </label>
-                      <label class="icon-option">
-                        <input type="radio" name="cornerDotShape" value="dot">
-                        <span class="icon-box">●</span>
-                      </label>
+                      <label class="icon-option"><input type="radio" name="cornerDotShape" value="square" checked><span class="icon-box">■</span></label>
+                      <label class="icon-option"><input type="radio" name="cornerDotShape" value="dot"><span class="icon-box">●</span></label>
                     </div>
                   </div>
 
@@ -234,7 +261,6 @@
                     </div>
                   </div>
 
-                  <!-- ปรับให้อยู่ในสถานะซ่อนอยู่เป็นค่าเริ่มต้น (style="display:none;") -->
                   <div id="qrResultContainer" class="result-card" style="display:none;">
                     <div class="success-banner">
                       <svg class="svg-icon me-2" viewBox="0 0 512 512" aria-hidden="true"><path d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM369 209L241 337c-9.4 9.4-24.6 9.4-33.9 0l-64-64c-9.4-9.4-9.4-24.6 0-33.9s24.6-9.4 33.9 0l47 47L335 175c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9z"/></svg>พร้อมดาวน์โหลดภาพความละเอียดสูง
@@ -263,9 +289,18 @@
         <button class="close-modal-btn" aria-label="ปิด">&times;</button>
       </div>
       <div class="modal-body-custom">
-        <label for="filenameInput" class="custom-label mb-2">ตั้งชื่อไฟล์ของคุณ</label>
-        <input type="text" id="filenameInput" class="form-control custom-input" placeholder="ตัวอย่าง: my_shop_qr" autocomplete="off">
-        <p class="modal-hint mt-2">หากเว้นว่างไว้ ระบบจะดึงชื่อเว็บไซต์มาตั้งให้อัตโนมัติในนามสกุล .png</p>
+        <div class="mb-3">
+          <label for="filenameInput" class="custom-label mb-2">ตั้งชื่อไฟล์ของคุณ</label>
+          <input type="text" id="filenameInput" class="form-control custom-input" placeholder="ตัวอย่าง: my_shop_qr" autocomplete="off">
+        </div>
+        <div class="mb-2">
+          <label for="fileFormat" class="custom-label mb-2">รูปแบบไฟล์ (Format)</label>
+          <select id="fileFormat" class="form-select custom-select">
+            <option value="png" selected>PNG - แนะนำสำหรับภาพทั่วไป</option>
+            <option value="svg">SVG - เวกเตอร์ คมชัดทุกขนาด ย่อ/ขยายไม่แตก</option>
+          </select>
+        </div>
+        <p class="modal-hint mt-2">หากเว้นว่างชื่อไฟล์ไว้ ระบบจะดึงข้อมูลมาตั้งให้อัตโนมัติ</p>
       </div>
       <div class="modal-footer-custom">
         <button id="cancelModalBtn" class="btn-modal-cancel">ยกเลิก</button>
